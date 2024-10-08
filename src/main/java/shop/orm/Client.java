@@ -1,13 +1,17 @@
 package shop.orm;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
-@MappedSuperclass
-public abstract class Client {
+@Entity
+@Table(name = "Client")
+@Access(AccessType.FIELD)
+
+
+public class Client {
 
     @Id
     private Long id;
+
+    @ManyToOne
+    private ClientType clientType;
 }
