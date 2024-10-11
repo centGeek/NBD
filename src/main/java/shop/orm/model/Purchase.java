@@ -13,9 +13,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Access(AccessType.FIELD)
 public class Purchase {
 
@@ -26,6 +23,14 @@ public class Purchase {
     @ManyToOne
     private Client client;
 
+    public Purchase() {
+    }
+
+    public Purchase(Client client, List<Product> products) {
+        this.client = client;
+        this.products = products;
+    }
+
     @ManyToMany
     @JoinTable(
             name = "purchase_product",
@@ -34,4 +39,10 @@ public class Purchase {
     )
     private List<Product> products = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Purchase{" + "client=" + client +
+                ", products=" + products +
+                '}';
+    }
 }

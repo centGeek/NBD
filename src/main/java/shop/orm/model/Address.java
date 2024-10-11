@@ -1,16 +1,27 @@
 package shop.orm.model;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Embeddable
+@Entity
 @Access(AccessType.FIELD)
 public class Address {
+    public Address() {
+
+    }
+    public Address(String city, String country, String postal_code, String street, String street_number) {
+        this.city = city;
+        this.country = country;
+        this.postal_code = postal_code;
+        this.street = street;
+        this.street_number = street_number;
+    }
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer address_id;
 
     @Column(name = "city")
@@ -28,4 +39,17 @@ public class Address {
     @Column(name = "street_number")
     private String street_number;
 
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Address{");
+        sb.append("address_id=").append(address_id);
+        sb.append(", city='").append(city).append('\'');
+        sb.append(", country='").append(country).append('\'');
+        sb.append(", postal_code='").append(postal_code).append('\'');
+        sb.append(", street='").append(street).append('\'');
+        sb.append(", street_number='").append(street_number).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

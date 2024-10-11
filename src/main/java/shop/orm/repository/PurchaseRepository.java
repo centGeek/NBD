@@ -2,21 +2,32 @@ package shop.orm.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import shop.orm.menagers.ProductManager;
+import shop.orm.model.ClientType;
+import shop.orm.model.Product;
 import shop.orm.model.Purchase;
 
 import java.util.List;
 
 public class PurchaseRepository {
+
+
     public List<Purchase> getAllPurchasesByClient(EntityManager entityManager, int clientId){
-        entityManager.getTransaction().begin();
         String selectQuery = "SELECT p FROM Purchase p where p.client.id =: clientId";
-        Query query = entityManager.createQuery(selectQuery);
-        List<Purchase> purchases = query.getResultList();
-        entityManager.getTransaction().commit();
-        return purchases;
+        TypedQuery<Purchase> query = entityManager.createQuery(selectQuery, Purchase.class);
+        query.setParameter("clientId", clientId);
+        return query.getResultList();
     }
-    public List<Purchase> makeAPurchase(EntityManager entityManager, Purchase purchase){
+    public void buyAProduct(EntityManager entityManager, Product product){
+        entityManager.persist(product);
+    }
+    public void makeAPurchase(EntityManager entityManager, Purchase purchase){
+        List<Product> products = purchase.getProducts();
         entityManager.getTransaction().begin();
-        return null;
+        for (Product product : products) {
+            this.buyAProduct(entityManager, product);
+        }
+        entityManager.persist(purchase);
     }
 }

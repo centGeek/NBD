@@ -4,7 +4,7 @@
         version="3.0"
         xsi:schemaLocation= "https://jakarta.ee/xml/ns/persistence
   https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
-    <persistence-unit name="NBD">
+    <persistence-unit name="NBD-unit">
         <class>shop.orm.model.Address</class>
         <class>shop.orm.model.Client</class>
         <class>shop.orm.model.ClientType</class>
@@ -14,9 +14,10 @@
         <class>shop.orm.model.Purchase</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/NBD"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5555/nbddb"/>
             <property name="jakarta.persistence.jdbc.user" value="nbd"/>
             <property name="jakarta.persistence.jdbc.password" value="nbdpassword"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
     </persistence-unit>
 </persistence>
