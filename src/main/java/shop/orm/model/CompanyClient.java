@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Access(AccessType.FIELD)
-class CompanyClient extends ClientType {
-    @Column(name = "companyName")
+public class CompanyClient extends ClientType {
+    @Column(name = "company_name")
     private String companyName;
 
     @Column(name = "NIP")

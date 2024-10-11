@@ -21,7 +21,6 @@ public class ProductManager {
     public void changeProductPrice(EntityManager entityManager, Product product, BigDecimal productPrice) {
         productRepository.changeProductPrice(entityManager, product, productPrice);
     }
-
     public List<Product> getAllProductsByName(EntityManager entityManager, String productName) {
         return productRepository.getAllProductsByName(entityManager, productName);
     }

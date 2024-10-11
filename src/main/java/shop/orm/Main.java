@@ -20,9 +20,7 @@ public class Main {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("NBD-unit");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        Address address = new Address("Lodz", "Poland", "96-323", "Aleje Politechniki", "7");
-        Client client = new Client(address, new IndividualClient("03222222222","email@gmail.com", LocalDate.of(2022, 10, 21)));
-
+        Client client = TestData.getClient1();
         ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
         clientRegisterManager.clientRegister(client, entityManager);
         clientRegisterManager.clientRegister(client, entityManager);
@@ -38,6 +36,5 @@ public class Main {
         PurchaseManager purchaseManager = new PurchaseManager();
         purchaseManager.makeAPurchase(entityManager, purchase);
         System.out.println(purchaseManager.getAllPurchasesByClient(entityManager, 1));
-
     }
 }
