@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Embeddable
 @Access(AccessType.FIELD)
 public class Address {
     @Id

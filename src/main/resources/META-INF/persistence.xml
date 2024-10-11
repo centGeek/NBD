@@ -12,8 +12,6 @@
         <class>shop.orm.model.IndividualClient</class>
         <class>shop.orm.model.Product</class>
         <class>shop.orm.model.Purchase</class>
-        <class>shop.orm.model.VatAProduct</class>
-        <class>shop.orm.model.VatBProduct</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/NBD"/>

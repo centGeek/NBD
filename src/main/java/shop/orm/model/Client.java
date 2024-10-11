@@ -17,8 +17,9 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(fetch = FetchType.LAZY)
+
     @JoinColumn(name = "address_id", nullable = false)
+    @EmbeddedId
     private Address address;
     @OneToOne
     private ClientType clientType;

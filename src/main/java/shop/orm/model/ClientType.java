@@ -18,5 +18,5 @@ public abstract class ClientType {
     private Long id;
 
     @OneToOne
-    private Client clientList;
+    private Client client;
 }
