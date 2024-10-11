@@ -9,7 +9,10 @@ import shop.orm.repository.ClientRegisterRepository;
 import java.util.List;
 
 public class ClientRegisterManager {
-    private ClientRegisterRepository clientRegisterRepository;
+    private final ClientRegisterRepository clientRegisterRepository;
+    public ClientRegisterManager(){
+        this.clientRegisterRepository = new ClientRegisterRepository();
+    }
 
     public void clientRegister(Client client, EntityManager entityManager) {
         clientRegisterRepository.clientRegister(client, entityManager);

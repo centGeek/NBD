@@ -17,6 +17,6 @@ public class PurchaseRepository {
     }
     public List<Purchase> makeAPurchase(EntityManager entityManager, Purchase purchase){
         entityManager.getTransaction().begin();
-
+        return null;
     }
 }

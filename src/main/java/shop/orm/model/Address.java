@@ -28,7 +28,4 @@ public class Address {
     @Column(name = "street_number")
     private String street_number;
 
-    @OneToOne(mappedBy = "address")
-    private ClientType clientType;
-
 }

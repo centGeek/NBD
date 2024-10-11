@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor()
 @Builder
 @Table(name = "Client")
 @Access(AccessType.FIELD)
@@ -19,7 +19,6 @@ public class Client {
     private Long id;
 
     @JoinColumn(name = "address_id", nullable = false)
-    @EmbeddedId
     private Address address;
     @OneToOne
     private ClientType clientType;
