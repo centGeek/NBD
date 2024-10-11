@@ -17,6 +17,8 @@
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/NBD"/>
             <property name="jakarta.persistence.jdbc.user" value="nbd"/>
             <property name="jakarta.persistence.jdbc.password" value="nbdpassword"/>
+
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
     </persistence-unit>
 </persistence>
