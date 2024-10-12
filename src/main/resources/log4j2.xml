@@ -5,7 +5,6 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %highlight{%-5level}{FATAL=red blink, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} %logger{36} - %msg%n"/>
         </Console>
     </Appenders>
-
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Console"/>

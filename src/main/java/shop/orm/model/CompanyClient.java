@@ -22,4 +22,11 @@ public class CompanyClient extends ClientType {
     public CompanyClient() {
 
     }
+
+    @Override
+    public String toString() {
+        return "CompanyClient{" + "companyName='" + companyName + '\'' +
+                ", NIP=" + NIP +
+                '}';
+    }
 }

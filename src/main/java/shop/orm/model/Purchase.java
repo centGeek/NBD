@@ -31,18 +31,11 @@ public class Purchase {
         this.products = products;
     }
 
-    @ManyToMany
-    @JoinTable(
-            name = "purchase_product",
-            joinColumns = @JoinColumn(name = "purchase_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
-
     @Override
     public String toString() {
-        return "Purchase{" + "client=" + client +
-                ", products=" + products +
+        return "Purchase{" + " products=" + products +
                 '}';
     }
 }

@@ -16,6 +16,7 @@ public class Client {
         this.clientType = clientType;
     }
     @Id
+    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

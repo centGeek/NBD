@@ -1,17 +1,13 @@
 package shop.orm.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
-import shop.orm.model.Client;
-import shop.orm.model.ClientType;
 import shop.orm.model.Product;
-import shop.orm.model.Purchase;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ProductRepository {
+public class StockRepository {
 
     public void addProductToDatabase(EntityManager entityManager, String productName, BigDecimal price) {
         entityManager.getTransaction().begin();
@@ -32,5 +28,9 @@ public class ProductRepository {
         TypedQuery<Product> query = entityManager.createQuery(selectQuery, Product.class);
         query.setParameter("productName", productName);
         return query.getResultList();
+    }
+    public List<Product> getAllProductsAvailable(EntityManager entityManager){
+        String query = "select p from Product p where p.isProductBought = False ";
+        return (List<Product>) entityManager.createQuery(query).getResultList();
     }
 }

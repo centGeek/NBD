@@ -15,7 +15,7 @@ public class PurchaseManager {
         this.purchaseRepository = new PurchaseRepository();
     }
 
-    public List<Purchase> getAllPurchasesByClient(EntityManager entityManager, int clientId) {
+    public List<Purchase> getAllPurchasesByClient(EntityManager entityManager, long clientId) {
         return purchaseRepository.getAllPurchasesByClient(entityManager, clientId);
     }
 

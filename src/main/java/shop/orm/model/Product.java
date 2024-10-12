@@ -23,6 +23,13 @@ public class Product {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Column(name = "is_product_bought", nullable = false)
+    private boolean isProductBought;
+
+    @ManyToOne
+    @JoinColumn(name = "purchase_id")
+    private Purchase purchase;
+
     public Product() {
 
     }
@@ -30,12 +37,15 @@ public class Product {
     public Product(String productName, BigDecimal price) {
         this.productName = productName;
         this.price = price;
+        this.isProductBought = false;
     }
 
     @Override
     public String toString() {
         return "Product{" + "productName='" + productName + '\'' +
                 ", price=" + price +
+                ", isProductBought=" + isProductBought +
                 '}';
     }
 }
+
