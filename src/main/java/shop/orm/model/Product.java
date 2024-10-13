@@ -26,6 +26,9 @@ public class Product {
     @Column(name = "is_product_bought", nullable = false)
     private boolean isProductBought;
 
+    @Version
+    private Long version;
+
     @ManyToOne
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;

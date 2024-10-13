@@ -18,8 +18,8 @@ public class StockManager {
         stockRepository.addProductToDatabase(entityManager, productName, price);
     }
 
-    public void changeProductPrice(EntityManager entityManager, Product product, BigDecimal productPrice) {
-        stockRepository.changeProductPrice(entityManager, product, productPrice);
+    public void changeProductPrice(EntityManager entityManager, String product_name, BigDecimal productPrice) {
+        stockRepository.changeProductPrice(entityManager, product_name, productPrice);
     }
 
     public List<Product> getAllProductsByName(EntityManager entityManager, String productName) {

@@ -99,6 +99,8 @@ public class Main {
             } else {
                 System.out.println("No products were added to the cart.");
             }
+            entityManagerFactory.close();
+            entityManager.close();
         }
     }
 }

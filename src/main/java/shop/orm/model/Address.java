@@ -1,13 +1,12 @@
 package shop.orm.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Access(AccessType.FIELD)
+@EqualsAndHashCode
+@Getter
 public class Address {
     public Address() {
 
@@ -22,7 +21,7 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer address_id;
+    private Integer addressId;
 
     @Column(name = "city")
     private String city;
@@ -43,7 +42,7 @@ public class Address {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Address{");
-        sb.append("address_id=").append(address_id);
+        sb.append("address_id=").append(addressId);
         sb.append(", city='").append(city).append('\'');
         sb.append(", country='").append(country).append('\'');
         sb.append(", postal_code='").append(postal_code).append('\'');
