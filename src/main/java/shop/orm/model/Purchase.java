@@ -13,9 +13,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Access(AccessType.FIELD)
 public class Purchase {
 
@@ -26,12 +23,19 @@ public class Purchase {
     @ManyToOne
     private Client client;
 
-    @ManyToMany
-    @JoinTable(
-            name = "purchase_product",
-            joinColumns = @JoinColumn(name = "purchase_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products = new ArrayList<>();
+    public Purchase() {
+    }
 
+    public Purchase(Client client, List<Product> products) {
+        this.client = client;
+        this.products = products;
+    }
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
+    @Override
+    public String toString() {
+        return "Purchase{" + " products=" + products +
+                '}';
+    }
 }

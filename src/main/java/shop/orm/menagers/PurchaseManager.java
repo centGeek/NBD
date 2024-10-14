@@ -2,17 +2,24 @@ package shop.orm.menagers;
 
 import jakarta.persistence.EntityManager;
 import shop.orm.model.Product;
+import shop.orm.model.Purchase;
+import shop.orm.repository.PurchaseRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class PurchaseManager {
-    public void deleteProduct(Product product){
+    private final PurchaseRepository purchaseRepository;
 
-    };
-    public void updateProduct(EntityManager entityManager, Product productToUpdate, BigDecimal new_price){
-        entityManager.getTransaction().begin();
-        entityManager.getTransaction().commit();
+    public PurchaseManager() {
+        this.purchaseRepository = new PurchaseRepository();
     }
 
+    public List<Purchase> getAllPurchasesByClient(EntityManager entityManager, long clientId) {
+        return purchaseRepository.getAllPurchasesByClient(entityManager, clientId);
+    }
 
+    public void makeAPurchase(EntityManager entityManager, Purchase purchase) {
+        purchaseRepository.makeAPurchase(entityManager, purchase);
+    }
 }
