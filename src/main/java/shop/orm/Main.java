@@ -58,7 +58,9 @@ public class Main {
                 String productName = scanner.nextLine();
 
                 if ("exit".equalsIgnoreCase(productName)) {
-                    break;
+                    entityManagerFactory.close();
+                    entityManager.close();
+                    return;
                 }
                 if (!productCountMap.containsKey(productName)) {
                     System.out.println("Product not available. Try again.");
@@ -99,8 +101,12 @@ public class Main {
             } else {
                 System.out.println("No products were added to the cart.");
             }
-            entityManagerFactory.close();
+            if (entityManagerFactory.isOpen()){
+                entityManagerFactory.close();
+            }
+            if (entityManager.getTransaction().isActive()){
             entityManager.close();
+            }
         }
     }
 }

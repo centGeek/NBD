@@ -7,7 +7,6 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Setter
 @Getter
 @EqualsAndHashCode
