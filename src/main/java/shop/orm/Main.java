@@ -9,17 +9,63 @@ import shop.orm.menagers.StockManager;
 import shop.orm.model.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
+
 public class Main {
+
+    private static Client registerClientMain() {
+        Client newClient;
+        int typeChoice;
+        Scanner scanner = new Scanner(System.in);  // Create a Scanner object
+        System.out.print("\nChoose new client type:\n1: Individual\n2: Company\n");
+        typeChoice = Integer.parseInt(scanner.nextLine());
+        switch (typeChoice) {
+            case 1:
+                String pesel,email;
+                LocalDate localDate;
+                System.out.print("Type a new client pesel: ");
+                pesel = scanner.nextLine();
+                System.out.print("email:");
+                email = scanner.nextLine();
+                System.out.print("Birth date yyyy-mm-dd: ");
+                localDate = LocalDate.parse(scanner.nextLine());
+                String city,country,street,postalCode,street_number;
+                System.out.print("City: ");
+                city = scanner.nextLine();
+                System.out.print("Country: ");
+                country = scanner.nextLine();
+                System.out.print("Street: ");
+                street = scanner.nextLine();
+                System.out.print("PostalCode: ");
+                postalCode = scanner.nextLine();
+                System.out.print("Street number: ");
+                street_number = scanner.nextLine();
+
+
+                Address address = new Address(city,country,postalCode,street,street_number);
+                ClientType newIndividualClientType = new IndividualClient(pesel,email,localDate);
+                newClient = new Client(address,newIndividualClientType);
+                break;
+            case 2:
+                //TODO
+                newClient = new Client();
+                break;
+            default:
+                throw new RuntimeException("Client not created!");
+        }
+        return newClient;
+    }
+
     public static void main(String[] args) {
         //Client Registering, Client selecting
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("NBD-unit");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        Client client = TestData.getClient1();
+
+        Client client = registerClientMain();
         ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
-        clientRegisterManager.clientRegister(client, entityManager);
         clientRegisterManager.clientRegister(client, entityManager);
 
         List<Client> allClients = clientRegisterManager.getAllClients(entityManager);
@@ -101,11 +147,11 @@ public class Main {
             } else {
                 System.out.println("No products were added to the cart.");
             }
-            if (entityManagerFactory.isOpen()){
+            if (entityManagerFactory.isOpen()) {
                 entityManagerFactory.close();
             }
-            if (entityManager.getTransaction().isActive()){
-            entityManager.close();
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.close();
             }
         }
     }
