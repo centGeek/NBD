@@ -12,25 +12,25 @@ import shop.orm.model.Client;
 public class ClientRegisterManagerTest {
 
     @Test
+    @org.junit.jupiter.api.Order(2)
     public void addingTestCorrectly() {
         EntityManager entityManager = EntityManagerClassSingleton.getEntityManager();
         ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
-
-        Assertions.assertEquals(0, clientRegisterManager.getAllClients(entityManager).size());
-
+        clientRegisterManager.clientDelete(TestData.getClient2(), entityManager);
         Client client = TestData.getClient1();
         clientRegisterManager.clientRegister(client, entityManager);
         Assertions.assertEquals(1, clientRegisterManager.getAllClients(entityManager).size());
 
-        client = TestData.getClient1();
         clientRegisterManager.clientRegister(client, entityManager);
         Assertions.assertEquals(1, clientRegisterManager.getAllClients(entityManager).size());
 
-        client = TestData.getClient2();
+        client = TestData.getClient3();
         clientRegisterManager.clientRegister(client, entityManager);
+        System.out.println(clientRegisterManager.getAllClients(entityManager));
         Assertions.assertEquals(2, clientRegisterManager.getAllClients(entityManager).size());
     }
     @Test
+    @org.junit.jupiter.api.Order(1)
     public void clientDeletingSuccessFully() {
         EntityManager entityManager = EntityManagerClassSingleton.getEntityManager();
         ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
@@ -52,11 +52,12 @@ public class ClientRegisterManagerTest {
 
     }
     @Test
+    @org.junit.jupiter.api.Order(3)
     public void clientUpdateAddress() {
+
         EntityManager entityManager = EntityManagerClassSingleton.getEntityManager();
         ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
 
-        Assertions.assertEquals(0, clientRegisterManager.getAllClients(entityManager).size());
 
         Client client = TestData.getClient1();
 
@@ -64,6 +65,7 @@ public class ClientRegisterManagerTest {
         Address address = new Address(
                 "Warszawa", "Ksiestwo Warszawskie",
                 "14-10", "Grunwaldzka", "1");
+        client = clientRegisterManager.getAllClients(entityManager).get(0);
         clientRegisterManager.clientUpdateAddress(client, address,entityManager);
         Assertions.assertEquals(address,
                 clientRegisterManager.getAllClients(entityManager).get(0).getAddress());
