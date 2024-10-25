@@ -1,9 +1,10 @@
 package shop.orm.menagers;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.CleanupMode;
 import shop.orm.TestData;
 import shop.orm.model.Client;
 import shop.orm.model.Product;
@@ -16,7 +17,9 @@ public class PurchaseManagerTest {
 
     @Test
     public void purchaseWentCorrectly(){
-        EntityManager entityManager = EntityManagerClassSingleton.getEntityManager();
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("NBD-unit");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
 
         Client client = TestData.getClient1();
         ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
@@ -42,6 +45,8 @@ public class PurchaseManagerTest {
                 allPurchasesByClient.size());
         Assertions.assertEquals(5,
                 allPurchasesByClient.get(0).getProducts().size());
+        entityManager.close();
+        entityManagerFactory.close();
 
     }
 
