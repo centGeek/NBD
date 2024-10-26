@@ -1,35 +1,24 @@
 package shop.orm.model;
 
 
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 
-@Entity
 @Setter
 @Getter
 @EqualsAndHashCode
-@Access(AccessType.FIELD)
 public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Column(name = "is_product_bought", nullable = false)
     private boolean isProductBought;
 
-    @Version
     private Long version;
 
-    @ManyToOne
-    @JoinColumn(name = "purchase_id")
     private Purchase purchase;
 
     public Product() {

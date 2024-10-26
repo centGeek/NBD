@@ -15,18 +15,18 @@ public class StockManager {
     }
 
     public void addProductToDatabase(EntityManager entityManager, String productName, BigDecimal price) {
-        stockRepository.addProductToDatabase(entityManager, productName, price);
+        stockRepository.addProductToDatabase( productName, price);
     }
 
     public void changeProductPrice(EntityManager entityManager, String product_name, BigDecimal productPrice) {
-        stockRepository.changeProductPrice(entityManager, product_name, productPrice);
+        stockRepository.changeProductPrice(product_name, productPrice);
     }
 
     public List<Product> getAllProductsByName(EntityManager entityManager, String productName) {
-        return stockRepository.getAllProductsByName(entityManager, productName);
+        return stockRepository.getAllProductsByName(productName);
     }
 
     public List<Product> getAllProductsAvailable(EntityManager entityManager) {
-        return stockRepository.getAllProductsAvailable(entityManager);
+        return stockRepository.getAllProductsAvailable();
     }
 }

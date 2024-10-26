@@ -1,10 +1,8 @@
 package shop.orm.model;
 
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Access(AccessType.FIELD)
+
 @EqualsAndHashCode
 @Getter
 public class Address {
@@ -19,23 +17,17 @@ public class Address {
         this.street_number = street_number;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Integer addressId;
 
-    @Column(name = "city")
     private String city;
 
-    @Column(name = "country")
     private String country;
 
-    @Column(name = "postal_code")
     private String postal_code;
 
-    @Column(name = "street")
     private String street;
 
-    @Column(name = "street_number")
     private String street_number;
 
 

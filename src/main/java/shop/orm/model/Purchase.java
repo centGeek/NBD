@@ -1,6 +1,5 @@
 package shop.orm.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,16 +10,11 @@ import shop.orm.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
-@Access(AccessType.FIELD)
 public class Purchase {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     private Client client;
 
     public Purchase() {
@@ -31,7 +25,6 @@ public class Purchase {
         this.products = products;
     }
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
     @Override
     public String toString() {

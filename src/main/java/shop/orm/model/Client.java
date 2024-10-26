@@ -1,12 +1,9 @@
 package shop.orm.model;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name = "Client")
-@Access(AccessType.FIELD)
+
 public class Client {
     public Client() {
 
@@ -15,18 +12,13 @@ public class Client {
         this.address = address;
         this.clientType = clientType;
     }
-    @Id
     @Getter
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
     @Getter
-    @OneToOne
-    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
-    @OneToOne
     @Getter
     private ClientType clientType;
 
