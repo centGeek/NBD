@@ -6,9 +6,7 @@ import lombok.*;
 @EqualsAndHashCode
 @Getter
 public class Address {
-    public Address() {
 
-    }
     public Address(String city, String country, String postal_code, String street, String street_number) {
         this.city = city;
         this.country = country;

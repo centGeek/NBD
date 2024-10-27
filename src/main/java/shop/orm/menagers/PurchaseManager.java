@@ -16,10 +16,10 @@ public class PurchaseManager {
     }
 
     public List<Purchase> getAllPurchasesByClient(EntityManager entityManager, long clientId) {
-        return purchaseRepository.getAllPurchasesByClient(entityManager, clientId);
+        return purchaseRepository.getAllPurchasesByClient( clientId);
     }
 
     public void makeAPurchase(EntityManager entityManager, Purchase purchase) {
-        purchaseRepository.makeAPurchase(entityManager, purchase);
+        purchaseRepository.makeAPurchase( purchase);
     }
 }

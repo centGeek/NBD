@@ -5,13 +5,12 @@ import lombok.Setter;
 
 
 public class Client {
-    public Client() {
 
-    }
     public Client(Address address, ClientType clientType) {
         this.address = address;
         this.clientType = clientType;
     }
+
     @Getter
     private Long id;
 
