@@ -35,13 +35,17 @@ public class AddressMdb extends AbstractEntityMdb {
     }
 
 
-    public AddressMdb(Address address) {
-        super(address.getId().toString());
+    public AddressMdb(Address address, String uuid) {
+        super(uuid);
         this.city = address.getCity();
         this.country = address.getCountry();
         this.postal_code = address.getPostal_code();
         this.street = address.getStreet();
         this.street_number = address.getStreet_number();
+    }
+
+    public static Address AddresMdbToAddress(AddressMdb addressMdb){
+        return new Address(addressMdb.getCity(),addressMdb.getCountry(),addressMdb.getPostal_code(),addressMdb.getStreet(),addressMdb.getStreet_number());
     }
 
     public String getCity() {

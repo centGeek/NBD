@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class AbstractEntityMdb implements Serializable {
     @BsonCreator
-    public AbstractEntityMdb(String id) {
+    public AbstractEntityMdb(@BsonProperty("_id") String id) {
         this.entityId = id;
     }
 
@@ -17,8 +17,7 @@ public class AbstractEntityMdb implements Serializable {
     @BsonProperty("_id")
     private final String entityId;
 
-    public String getId() {
+    public String getEntityId() {
         return entityId;
     }
-
 }

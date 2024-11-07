@@ -33,8 +33,9 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
 
             //List<ClientType> clientByPesel = this.getClientByPesel(pesel);
             //if (clientByPesel.isEmpty()) {
-                MongoCollection<ClientMdb> collection = database.getCollection("clients", ClientMdb.class);
-                collection.insertOne(new ClientMdb(client));
+            MongoCollection<ClientMdb> collection = database.getCollection("clients", ClientMdb.class);
+            ClientMdb clientMdb = new ClientMdb(client);
+            collection.insertOne(clientMdb);
 //                entityManager.getTransaction().begin();
 //                entityManager.persist(client.getAddress());
 //                entityManager.persist(client.getClientType());
@@ -80,15 +81,17 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
     }
 
     public List<Client> getAllClients() {
-        MongoCollection<ClientMdb> clientMdbMongoCollection = database.getCollection("clients", ClientMdb.class);
-        ArrayList<ClientMdb> clientMdbs = clientMdbMongoCollection.find().into(new ArrayList<>());
-
         //String selectQuery = "SELECT c FROM Client c";
         //entityManager.getTransaction().begin();
         //Query query = entityManager.createQuery(selectQuery);
         //List<Client> clients = query.getResultList();
         //entityManager.getTransaction().commit();
         //return clients;
+
+
+
+        MongoCollection<ClientMdb> clientMdbMongoCollection = database.getCollection("clients", ClientMdb.class);
+        ArrayList<ClientMdb> clientMdbs = clientMdbMongoCollection.find().into(new ArrayList<>());
         Address address = new Address("Zgierz", "Poland", "12-001", "Zbierzowa", "7");
         ArrayList<Client> clients = new ArrayList<>();
         for (ClientMdb clientMdb : clientMdbs) {

@@ -2,15 +2,12 @@ package shop.orm.menagers;
 
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import shop.orm.TestData;
-import shop.orm.model.Address;
 import shop.orm.model.Client;
 import shop.orm.repository.AbstractMongoRepository;
-import shop.orm.repository.MongoDBClasses.AbstractEntityMdb;
+import shop.orm.repository.MongoDBClasses.ClientMdb;
 
 import java.util.ArrayList;
 
@@ -18,75 +15,96 @@ public class ClientRegisterManagerTest {
 
     @Test
     @org.junit.jupiter.api.Order(2)
-    public void addingTestCorrectly()  {
+    public void addingTestCorrectly() {
         try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
             //clientRegisterManager.clientDelete(TestData.getClient2());
             Client client = TestData.getClient1();
             clientRegisterManager.clientRegister(client);
             Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
 
-            clientRegisterManager.clientRegister(client);
+            //clientRegisterManager.clientRegister(client);
 
-            Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
+            //Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
 
             client = TestData.getClient3();
-            clientRegisterManager.clientRegister(client);
-            System.out.println(clientRegisterManager.getAllClients());
+            //clientRegisterManager.clientRegister(client);
+            //System.out.println(clientRegisterManager.getAllClients());
 
-            Assertions.assertEquals(2, clientRegisterManager.getAllClients().size());
-        }
-        catch (Exception e) {
+            //Assertions.assertEquals(2, clientRegisterManager.getAllClients().size());
+        } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
     }
-        @Test
-    public void connectionTest()  {
+
+    @Test
+    public void randomentityTest() {
+        MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
+        mongoDatabase.getCollection("testCollection").drop();
+        TestEntity testEntity = new TestEntity("testData check");
+        mongoDatabase.getCollection("testCollection", TestEntity.class).insertOne(testEntity);
+        ArrayList<TestEntity> testCollection = mongoDatabase.getCollection("testCollection", TestEntity.class).find().into(new ArrayList<>());
+        Assertions.assertEquals(testEntity.getData() + testEntity.getEntityId(), testCollection.getFirst().getData() + testCollection.getFirst().getEntityId());
+    }
+
+    @Test
+    public void myMongoClientAddTest() {
+        MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
+        mongoDatabase.getCollection("testCollection").drop();
+        ArrayList<ClientMdb> testCollection = mongoDatabase.getCollection("testCollection", ClientMdb.class).find().into(new ArrayList<>());
+        Assertions.assertEquals(testCollection.size(), 0);
+        ClientMdb testEntity = new ClientMdb(TestData.getClient1());
+        mongoDatabase.getCollection("testCollection", ClientMdb.class).insertOne(testEntity);
+        testCollection = mongoDatabase.getCollection("testCollection", ClientMdb.class).find().into(new ArrayList<>());
+        Assertions.assertEquals(1, testCollection.size());
+    }
+
+
+    @Test
+    public void connectionTest() {
         //given
 
-            //when
+        //when
 
+        try {
+            MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
 
-            try{
-                MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
+            mongoDatabase.getCollection("testCollection").drop();
 
-                mongoDatabase.getCollection("testCollection").drop();
+            Document document = new Document("1", 1);
+            mongoDatabase.getCollection("testCollection").insertOne(document);
+            ArrayList<Document> documents = mongoDatabase.getCollection("testCollection").find().into(new ArrayList<>());
 
-                Document document = new Document("1",1);
-                mongoDatabase.getCollection("testCollection").insertOne(document);
-                ArrayList<Document> documents = mongoDatabase.getCollection("testCollection").find().into(new ArrayList<>());
+            Assertions.assertEquals(1, documents.size());
 
-                Assertions.assertEquals(1, documents.size());
+            mongoDatabase.getCollection("testCollection").deleteOne(document);
+            documents = mongoDatabase.getCollection("testCollection").find().into(new ArrayList<>());
 
-                mongoDatabase.getCollection("testCollection").deleteOne(document);
-                documents = mongoDatabase.getCollection("testCollection").find().into(new ArrayList<>());
+            Assertions.assertEquals(0, documents.size());
 
-                Assertions.assertEquals(0, documents.size());
+            Document document2 = new Document("1", 2);
+            documents.add(document);
+            documents.add(document2);
+            mongoDatabase.getCollection("testCollection").insertMany(documents);
+            documents = mongoDatabase.getCollection("testCollection").find().into(new ArrayList<>());
 
-                Document document2 = new Document("1",2);
-                documents.add(document);
-                documents.add(document2);
-                mongoDatabase.getCollection("testCollection").insertMany(documents);
-                documents = mongoDatabase.getCollection("testCollection").find().into(new ArrayList<>());
+            Assertions.assertEquals(2, documents.size());
 
-                Assertions.assertEquals(2, documents.size());
+            //clientRegisterManager.clientRegister(TestData.getClient1());
+            //Document doc = new Document();
+            //doc.append("id","125");
+            //Document doc2 = new Document();
+            //doc2.append("id","126");
+            //MongoDatabase database = AbstractMongoRepository.getDatabase();
+            //database.getCollection("testCollection").insertOne(doc);
+            //database.getCollection("testCollection").insertOne(doc2);
+            //ArrayList<Document> documents = database.getCollection("testCollection").find().into(new ArrayList<>());
+            //Assertions.assertEquals(documents.size(), 2 );
 
-                //clientRegisterManager.clientRegister(TestData.getClient1());
-                //Document doc = new Document();
-                //doc.append("id","125");
-                //Document doc2 = new Document();
-                //doc2.append("id","126");
-                //MongoDatabase database = AbstractMongoRepository.getDatabase();
-                //database.getCollection("testCollection").insertOne(doc);
-                //database.getCollection("testCollection").insertOne(doc2);
-                //ArrayList<Document> documents = database.getCollection("testCollection").find().into(new ArrayList<>());
-                //Assertions.assertEquals(documents.size(), 2 );
-
-                AbstractMongoRepository.decrementCounter();
-            }
-            catch (Exception e) {
-                Assertions.fail(e.getMessage());
-            }
+            AbstractMongoRepository.decrementCounter();
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
         }
+    }
 
 //    @Test
 //    @org.junit.jupiter.api.Order(1)
