@@ -11,12 +11,9 @@ public class CompanyClient extends ClientType {
     public CompanyClient(String pesel, long NIP, String companyName) {
         super(pesel);
         this.NIP = NIP;
-        this.companyName  = companyName;
+        this.companyName = companyName;
     }
 
-    public CompanyClient() {
-
-    }
 
     @Override
     public String toString() {

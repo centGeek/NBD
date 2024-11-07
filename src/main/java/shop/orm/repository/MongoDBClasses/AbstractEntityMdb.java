@@ -1,22 +1,23 @@
-package shop.orm.repository;
+package shop.orm.repository.MongoDBClasses;
 
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-public abstract class AbstractEntityMdb implements Serializable {
+public class AbstractEntityMdb implements Serializable {
     @BsonCreator
-    public AbstractEntityMdb(long id) {
+    public AbstractEntityMdb(String id) {
         this.entityId = id;
     }
 
 
     @BsonProperty("_id")
-    private final long entityId;
+    private final String entityId;
 
-    public long getEntityId() {
+    public String getId() {
         return entityId;
     }
 

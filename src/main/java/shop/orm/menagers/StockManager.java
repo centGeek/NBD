@@ -1,6 +1,5 @@
 package shop.orm.menagers;
 
-import jakarta.persistence.EntityManager;
 import shop.orm.model.Product;
 import shop.orm.repository.StockRepository;
 
@@ -14,19 +13,19 @@ public class StockManager {
         this.stockRepository = new StockRepository();
     }
 
-    public void addProductToDatabase(EntityManager entityManager, String productName, BigDecimal price) {
-        stockRepository.addProductToDatabase( productName, price);
+    public void addProductToDatabase(String productName, BigDecimal price) {
+        stockRepository.addProductToDatabase(productName, price);
     }
 
-    public void changeProductPrice(EntityManager entityManager, String product_name, BigDecimal productPrice) {
+    public void changeProductPrice(String product_name, BigDecimal productPrice) {
         stockRepository.changeProductPrice(product_name, productPrice);
     }
 
-    public List<Product> getAllProductsByName(EntityManager entityManager, String productName) {
+    public List<Product> getAllProductsByName(String productName) {
         return stockRepository.getAllProductsByName(productName);
     }
 
-    public List<Product> getAllProductsAvailable(EntityManager entityManager) {
+    public List<Product> getAllProductsAvailable() {
         return stockRepository.getAllProductsAvailable();
     }
 }

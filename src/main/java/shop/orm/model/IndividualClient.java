@@ -22,9 +22,6 @@ public class IndividualClient extends ClientType {
         this.birthDate = birthDate;
     }
 
-    public IndividualClient() {
-
-    }
 
     @Override
     public String toString() {

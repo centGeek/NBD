@@ -3,16 +3,25 @@ package shop.orm.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 
 public class Client {
 
     public Client(Address address, ClientType clientType) {
+        this.id = UUID.randomUUID();
+        this.address = address;
+        this.clientType = clientType;
+    }
+
+    public Client(UUID id, Address address, ClientType clientType) {
+        this.id = id;
         this.address = address;
         this.clientType = clientType;
     }
 
     @Getter
-    private Long id;
+    private UUID id;
 
     @Setter
     @Getter

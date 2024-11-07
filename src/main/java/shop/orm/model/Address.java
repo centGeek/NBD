@@ -2,12 +2,15 @@ package shop.orm.model;
 
 import lombok.*;
 
+import java.util.UUID;
+
 
 @EqualsAndHashCode
 @Getter
 public class Address {
 
     public Address(String city, String country, String postal_code, String street, String street_number) {
+        this.id = UUID.randomUUID();
         this.city = city;
         this.country = country;
         this.postal_code = postal_code;
@@ -15,8 +18,17 @@ public class Address {
         this.street_number = street_number;
     }
 
+    public Address(UUID id, String city, String country, String postal_code, String street, String street_number) {
+        this.id = id;
+        this.city = city;
+        this.country = country;
+        this.postal_code = postal_code;
+        this.street = street;
+        this.street_number = street_number;
+    }
 
-    private Integer addressId;
+    @Getter
+    private UUID id;
 
     private String city;
 
@@ -32,7 +44,6 @@ public class Address {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Address{");
-        sb.append("address_id=").append(addressId);
         sb.append(", city='").append(city).append('\'');
         sb.append(", country='").append(country).append('\'');
         sb.append(", postal_code='").append(postal_code).append('\'');

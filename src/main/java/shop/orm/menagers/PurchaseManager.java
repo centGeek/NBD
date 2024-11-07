@@ -1,6 +1,5 @@
 package shop.orm.menagers;
 
-import jakarta.persistence.EntityManager;
 import shop.orm.model.Product;
 import shop.orm.model.Purchase;
 import shop.orm.repository.PurchaseRepository;
@@ -15,11 +14,11 @@ public class PurchaseManager {
         this.purchaseRepository = new PurchaseRepository();
     }
 
-    public List<Purchase> getAllPurchasesByClient(EntityManager entityManager, long clientId) {
-        return purchaseRepository.getAllPurchasesByClient( clientId);
+    public List<Purchase> getAllPurchasesByClient(long clientId) {
+        return purchaseRepository.getAllPurchasesByClient(clientId);
     }
 
-    public void makeAPurchase(EntityManager entityManager, Purchase purchase) {
-        purchaseRepository.makeAPurchase( purchase);
+    public void makeAPurchase(Purchase purchase) {
+        purchaseRepository.makeAPurchase(purchase);
     }
 }
