@@ -2,9 +2,11 @@ package shop.orm.repository;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.conversions.Bson;
 import shop.orm.model.Address;
 import shop.orm.model.Client;
 import shop.orm.model.ClientType;
@@ -51,9 +53,9 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
 
     public void clientDelete(Client client) {
         try {
-            //    entityManager.getTransaction().begin();
-            //    entityManager.remove(client);
-            //    entityManager.getTransaction().commit();
+            MongoCollection<ClientMdb> collection = database.getCollection("clients", ClientMdb.class);
+            Bson filter = Filters.eq("client",client.getId().toString());
+            collection.findOneAndDelete(filter);
         } catch (Exception e) {
             //    if (entityManager.getTransaction().isActive()) {
             //        entityManager.getTransaction().rollback();

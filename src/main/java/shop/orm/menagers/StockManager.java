@@ -6,15 +6,24 @@ import shop.orm.repository.StockRepository;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class StockManager {
+public class StockManager implements AutoCloseable {
     private final StockRepository stockRepository;
 
     public StockManager() {
         this.stockRepository = new StockRepository();
     }
 
+    public StockManager(String nameOfCollection){
+        this.stockRepository = new StockRepository(nameOfCollection);
+    }
+
     public void addProductToDatabase(String productName, BigDecimal price) {
-        stockRepository.addProductToDatabase(productName, price);
+        Product product = new Product(productName, price);
+        stockRepository.addProductToDatabase(product);
+    }
+
+    public void addProductToDatabase(Product product) {
+        stockRepository.addProductToDatabase(product);
     }
 
     public void changeProductPrice(String product_name, BigDecimal productPrice) {
@@ -27,5 +36,10 @@ public class StockManager {
 
     public List<Product> getAllProductsAvailable() {
         return stockRepository.getAllProductsAvailable();
+    }
+
+    @Override
+    public void close() throws Exception {
+        stockRepository.close();
     }
 }

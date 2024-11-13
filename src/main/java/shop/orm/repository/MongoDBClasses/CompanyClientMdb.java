@@ -1,17 +1,33 @@
 package shop.orm.repository.MongoDBClasses;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-@BsonDiscriminator(key = "_t",value = "Company")
-public class CompanyClientMdb implements ClientTypeMdb {
-    public CompanyClientMdb(String companyNameMdb, long NIPMdb) {
+@BsonDiscriminator(key = "_clazz",value = "Company")
+public class CompanyClientMdb extends ClientTypeMdb {
+    @BsonCreator
+    public CompanyClientMdb(
+            @BsonProperty("_id") String _id,
+            @BsonProperty("pesel") String pesel,
+            @BsonProperty("companyName") String companyNameMdb,
+            @BsonProperty("nip") String NIPMdb) {
+        super(pesel,_id);
         this.companyNameMdb = companyNameMdb;
         this.NIPMdb = NIPMdb;
     }
 
-    @BsonProperty
+    @BsonProperty("companyName")
     private String companyNameMdb;
-    @BsonProperty
-    private long NIPMdb;
+    @BsonProperty("nip")
+    private String NIPMdb;
+
+
+    public String getCompanyNameMdb() {
+        return companyNameMdb;
+    }
+
+    public String getNIPMdb() {
+        return NIPMdb;
+    }
 }

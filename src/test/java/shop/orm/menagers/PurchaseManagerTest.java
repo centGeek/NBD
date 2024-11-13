@@ -3,7 +3,7 @@
 //
 //import org.junit.jupiter.api.Assertions;
 //import org.junit.jupiter.api.Test;
-//import shop.orm.TestData;
+//import shop.orm.menagers.TestData;
 //import shop.orm.model.Client;
 //import shop.orm.model.Product;
 //import shop.orm.model.Purchase;

@@ -4,10 +4,12 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import shop.orm.TestData;
 import shop.orm.model.Client;
+import shop.orm.model.ClientType;
 import shop.orm.repository.AbstractMongoRepository;
 import shop.orm.repository.MongoDBClasses.ClientMdb;
+import shop.orm.repository.MongoDBClasses.ClientTypeMdb;
+import shop.orm.repository.MongoDBClasses.CompanyClientMdb;
 
 import java.util.ArrayList;
 
@@ -37,7 +39,7 @@ public class ClientRegisterManagerTest {
     }
 
     @Test
-    public void randomentityTest() {
+    public void randomEntityTest() {
         MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
         mongoDatabase.getCollection("testCollection").drop();
         TestEntity testEntity = new TestEntity("testData check");
@@ -57,6 +59,19 @@ public class ClientRegisterManagerTest {
         testCollection = mongoDatabase.getCollection("testCollection", ClientMdb.class).find().into(new ArrayList<>());
         Assertions.assertEquals(1, testCollection.size());
     }
+
+//    @Test
+//    public void clientTypeAddTest() {
+//        MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
+//        mongoDatabase.getCollection("testCollection").drop();
+//        ArrayList<ClientTypeMdb> testCollection = mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).find().into(new ArrayList<>());
+//        Assertions.assertEquals(testCollection.size(), 0);
+//        ClientTypeMdb testEntity = ClientMdb.clientTypeToClientTypeMdb(TestData.getClient1());
+//        mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).insertOne(testEntity);
+//        testCollection = mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).find().into(new ArrayList<>());
+//        Assertions.assertEquals(1, testCollection.size());
+//    }
+
 
 
     @Test
@@ -88,45 +103,33 @@ public class ClientRegisterManagerTest {
             documents = mongoDatabase.getCollection("testCollection").find().into(new ArrayList<>());
 
             Assertions.assertEquals(2, documents.size());
-
-            //clientRegisterManager.clientRegister(TestData.getClient1());
-            //Document doc = new Document();
-            //doc.append("id","125");
-            //Document doc2 = new Document();
-            //doc2.append("id","126");
-            //MongoDatabase database = AbstractMongoRepository.getDatabase();
-            //database.getCollection("testCollection").insertOne(doc);
-            //database.getCollection("testCollection").insertOne(doc2);
-            //ArrayList<Document> documents = database.getCollection("testCollection").find().into(new ArrayList<>());
-            //Assertions.assertEquals(documents.size(), 2 );
-
             AbstractMongoRepository.decrementCounter();
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
     }
 
-//    @Test
-//    @org.junit.jupiter.api.Order(1)
-//    public void clientDeletingSuccessFully() {
-//        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
-//            Assertions.assertEquals(0, clientRegisterManager.getAllClients().size());
-//
-//            Client client1 = TestData.getClient1();
-//            Client client2 = TestData.getClient2();
-//
-//            clientRegisterManager.clientRegister(client1);
-//            clientRegisterManager.clientRegister(client2);
-//            Assertions.assertEquals(2,
-//                    clientRegisterManager.getAllClients().size());
-//            clientRegisterManager.clientDelete(
-//                    clientRegisterManager.getAllClients().get(0));
-//            Assertions.assertEquals(1,
-//                    clientRegisterManager.getAllClients().size());
-//        } catch (Exception e) {
-//            Assertions.fail(e.getMessage());
-//        }
-//    }
+    @Test
+    @org.junit.jupiter.api.Order(1)
+    public void clientDeletingSuccessFully() {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
+            Assertions.assertEquals(0, clientRegisterManager.getAllClients().size());
+
+            Client client1 = TestData.getClient1();
+            Client client2 = TestData.getClient2();
+
+            clientRegisterManager.clientRegister(client1);
+            clientRegisterManager.clientRegister(client2);
+            Assertions.assertEquals(2,
+                    clientRegisterManager.getAllClients().size());
+            clientRegisterManager.clientDelete(
+                    clientRegisterManager.getAllClients().get(0));
+            Assertions.assertEquals(1,
+                    clientRegisterManager.getAllClients().size());
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
 //
 //    @Test
 //    @org.junit.jupiter.api.Order(3)

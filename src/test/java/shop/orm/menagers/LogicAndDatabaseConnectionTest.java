@@ -3,7 +3,7 @@
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.EntityManagerFactory;
 //import jakarta.persistence.Persistence;
-//import shop.orm.TestData;
+//import shop.orm.menagers.TestData;
 //import shop.orm.menagers.ClientRegisterManager;
 //import shop.orm.menagers.PurchaseManager;
 //import shop.orm.menagers.StockManager;

@@ -23,13 +23,13 @@ public class ClientMdb extends AbstractEntityMdb {
 
     public ClientMdb(Client client) {
         super(client.getId().toString());
-        //this.clientTypeMdb = clientTypeToClientTypeMdb(client.getClientType());
-        this.addressMdb = new AddressMdb(client.getAddress(),client.getId().toString());
+        //this.clientTypeMdb = clientTypeToClientTypeMdb(client);
+        this.addressMdb = new AddressMdb(client.getAddress(), client.getId().toString());
     }
 
-
-    //@BsonProperty("clientType")
-    //private ClientTypeMdb clientTypeMdb;
+//
+//    @BsonProperty("clientType")
+//    private ClientTypeMdb clientTypeMdb;
 
     @BsonProperty("address")
     private AddressMdb addressMdb;
@@ -39,45 +39,42 @@ public class ClientMdb extends AbstractEntityMdb {
     }
 
 
-    //    public ClientTypeMdb getClientTypeMdb() {
+//    public ClientTypeMdb getClientTypeMdb() {
 //        return clientTypeMdb;
 //    }
 
-//    public AddressMdb getAddressMdb() {
-//        return addressMdb;
-//    }
+    public static ClientTypeMdb clientTypeToClientTypeMdb(Client client) {
+        ClientType clientType = client.getClientType();
+        ClientTypeMdb clientTypeMdb = null;
 
-//    private ClientTypeMdb clientTypeToClientTypeMdb(ClientType clientType) {
-//        ClientTypeMdb clientTypeMdb = null;
-//
-//        String clientTypeString = clientType.toString();
-//
-//        if (clientTypeString.startsWith("IndividualClient")) {
-//            // Parsowanie informacji z IndividualClient
-//            String email = extractValue(clientTypeString, "email='", "'");
-//            String birthDate = extractValue(clientTypeString, "birthDate=", "}");
-//
-//            clientTypeMdb = new IndividualClientMdb(email, birthDate);
-//
-//        } else if (clientTypeString.startsWith("CompanyClient")) {
-//            // Parsowanie informacji z CompanyClient
-//            String companyName = extractValue(clientTypeString, "companyName='", "'");
-//            String nip = extractValue(clientTypeString, "NIP=", "}");
-//
-//            clientTypeMdb = new CompanyClientMdb(companyName, Long.parseLong(nip));
-//        }
-//
-//        return clientTypeMdb;
-//    }
+        String clientTypeString = clientType.toString();
+
+        if (clientTypeString.startsWith("IndividualClient")) {
+            // Parsowanie informacji z IndividualClient
+            String email = extractValue(clientTypeString, "email='", "'");
+            String birthDate = extractValue(clientTypeString, "birthDate=", "}");
+
+            clientTypeMdb = new IndividualClientMdb(client.getId().toString(), clientType.getPesel(), email, birthDate);
+
+        } else if (clientTypeString.startsWith("CompanyClient")) {
+            // Parsowanie informacji z CompanyClient
+            String companyName = extractValue(clientTypeString, "companyName='", "'");
+            String nip = extractValue(clientTypeString, "NIP=", "}");
+
+            clientTypeMdb = new CompanyClientMdb(client.getId().toString(), clientType.getPesel(), companyName, nip);
+        }
+
+        return clientTypeMdb;
+    }
 
     // Metoda pomocnicza do wyciągania wartości z toString()
-//    private String extractValue(String source, String prefix, String suffix) {
-//        int startIndex = source.indexOf(prefix) + prefix.length();
-//        int endIndex = source.indexOf(suffix, startIndex);
-//        return source.substring(startIndex, endIndex);
-//    }
+    private static String extractValue(String source, String prefix, String suffix) {
+        int startIndex = source.indexOf(prefix) + prefix.length();
+        int endIndex = source.indexOf(suffix, startIndex);
+        return source.substring(startIndex, endIndex);
+    }
 
-    //TODO tutaj zacząć ogarniać to ClientType
+//    //TODO tutaj zacząć ogarniać to ClientType
 //    public static Client ClientMdbToClient (ClientMdb clientMdb){
 //       AddressMdb addressMdb = clientMdb.getAddressMdb();
 //        Address address = AddressMdb.AddresMdbToAddress(addressMdb);

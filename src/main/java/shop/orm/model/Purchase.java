@@ -9,11 +9,12 @@ import shop.orm.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 public class Purchase {
 
-    private Long id;
+    private UUID id;
 
     private Client client;
 
@@ -21,6 +22,7 @@ public class Purchase {
     }
 
     public Purchase(Client client, List<Product> products) {
+        id = UUID.randomUUID();
         this.client = client;
         this.products = products;
     }

@@ -4,12 +4,13 @@ package shop.orm.model;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Setter
 @Getter
 @EqualsAndHashCode
 public class Product {
-    private Long id;
+    private UUID id;
 
     private String productName;
 
@@ -17,18 +18,23 @@ public class Product {
 
     private boolean isProductBought;
 
-    private Long version;
-
     private Purchase purchase;
 
     public Product() {
 
+    }
+    public Product(String productName, BigDecimal price, boolean isProductBought,UUID uuid ) {
+        this.productName = productName;
+        this.price = price;
+        this.isProductBought = isProductBought;
+        this.id = uuid;
     }
 
     public Product(String productName, BigDecimal price) {
         this.productName = productName;
         this.price = price;
         this.isProductBought = false;
+        this.id = UUID.randomUUID();
     }
 
     @Override

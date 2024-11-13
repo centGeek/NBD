@@ -87,12 +87,5 @@ services:
       rs.initiate(rsconf);
       '
 
-#volumes:
-#  mongo-db-data-1:
-#  mongo-configdb-data-1:
-#  mongo-db-data-2:
-#  mongo-configdb-data-2:
-#  mongo-db-data-3:
-#  mongo-configdb-data-3:
 networks:
   mongonet: { }

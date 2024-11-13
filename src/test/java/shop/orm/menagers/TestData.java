@@ -1,10 +1,9 @@
-package shop.orm;
+package shop.orm.menagers;
 
 import shop.orm.model.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class TestData {
     public static Client getClient1(){
