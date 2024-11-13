@@ -2,10 +2,11 @@ package shop.orm.model;
 
 import lombok.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
-@EqualsAndHashCode
+
 @Getter
 public class Address {
 
@@ -51,5 +52,18 @@ public class Address {
         sb.append(", street_number='").append(street_number).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(getCity(), address.getCity()) && Objects.equals(getCountry(), address.getCountry()) && Objects.equals(getPostal_code(), address.getPostal_code()) && Objects.equals(getStreet(), address.getStreet()) && Objects.equals(getStreet_number(), address.getStreet_number());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCity(), getCountry(), getPostal_code(), getStreet(), getStreet_number());
     }
 }

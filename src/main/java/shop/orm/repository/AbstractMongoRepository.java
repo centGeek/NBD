@@ -13,6 +13,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import shop.orm.repository.MongoDBClasses.ClientTypeMdbCodec;
 
 import java.util.List;
 
@@ -21,11 +22,10 @@ public abstract class AbstractMongoRepository implements AutoCloseable {
     protected static int closedCounter = 0;
 
     public AbstractMongoRepository() {
-        closedCounter++;
     }
 
     private static MongoDatabase database;
-    private static MongoClient mongoClient;
+    protected static MongoClient mongoClient;
     private static ConnectionString connectionString = new ConnectionString("mongodb://mongodb1:27017,mongodb2:27018,mongodb3:27019/?replicaSet=replica_set_single");
     private static MongoCredential credential = MongoCredential.createCredential("admin", "admin", "adminpassword".toCharArray());
 
@@ -36,6 +36,7 @@ public abstract class AbstractMongoRepository implements AutoCloseable {
             .build());
 
     public static MongoDatabase getDatabase() {
+        closedCounter++;
         if (mongoClient == null) {
             MongoClientSettings settings = MongoClientSettings.builder()
                     .credential(credential)
@@ -43,6 +44,7 @@ public abstract class AbstractMongoRepository implements AutoCloseable {
                     .uuidRepresentation(UuidRepresentation.STANDARD)
                     .codecRegistry(CodecRegistries.fromRegistries(
                             MongoClientSettings.getDefaultCodecRegistry(),
+                            CodecRegistries.fromCodecs(new ClientTypeMdbCodec()),
                             pojoCodecRegistry
                     ))
                     .build();

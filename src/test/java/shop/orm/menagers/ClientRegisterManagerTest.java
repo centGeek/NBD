@@ -2,23 +2,30 @@ package shop.orm.menagers;
 
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import shop.orm.model.Address;
 import shop.orm.model.Client;
-import shop.orm.model.ClientType;
 import shop.orm.repository.AbstractMongoRepository;
 import shop.orm.repository.MongoDBClasses.ClientMdb;
 import shop.orm.repository.MongoDBClasses.ClientTypeMdb;
-import shop.orm.repository.MongoDBClasses.CompanyClientMdb;
 
 import java.util.ArrayList;
 
 public class ClientRegisterManagerTest {
 
+    @BeforeAll
+    public static void setUp() {
+        AbstractMongoRepository.getDatabase();
+    }
+
+    private final String testClientCollection = "testClients";
+
     @Test
-    @org.junit.jupiter.api.Order(2)
     public void addingTestCorrectly() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
             //clientRegisterManager.clientDelete(TestData.getClient2());
             Client client = TestData.getClient1();
             clientRegisterManager.clientRegister(client);
@@ -46,6 +53,7 @@ public class ClientRegisterManagerTest {
         mongoDatabase.getCollection("testCollection", TestEntity.class).insertOne(testEntity);
         ArrayList<TestEntity> testCollection = mongoDatabase.getCollection("testCollection", TestEntity.class).find().into(new ArrayList<>());
         Assertions.assertEquals(testEntity.getData() + testEntity.getEntityId(), testCollection.getFirst().getData() + testCollection.getFirst().getEntityId());
+        AbstractMongoRepository.decrementCounter();
     }
 
     @Test
@@ -58,20 +66,21 @@ public class ClientRegisterManagerTest {
         mongoDatabase.getCollection("testCollection", ClientMdb.class).insertOne(testEntity);
         testCollection = mongoDatabase.getCollection("testCollection", ClientMdb.class).find().into(new ArrayList<>());
         Assertions.assertEquals(1, testCollection.size());
+        AbstractMongoRepository.decrementCounter();
     }
 
-//    @Test
-//    public void clientTypeAddTest() {
-//        MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
-//        mongoDatabase.getCollection("testCollection").drop();
-//        ArrayList<ClientTypeMdb> testCollection = mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).find().into(new ArrayList<>());
-//        Assertions.assertEquals(testCollection.size(), 0);
-//        ClientTypeMdb testEntity = ClientMdb.clientTypeToClientTypeMdb(TestData.getClient1());
-//        mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).insertOne(testEntity);
-//        testCollection = mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).find().into(new ArrayList<>());
-//        Assertions.assertEquals(1, testCollection.size());
-//    }
-
+    @Test
+    public void clientTypeAddTest() {
+        MongoDatabase mongoDatabase = AbstractMongoRepository.getDatabase();
+        mongoDatabase.getCollection("testCollection").drop();
+        ArrayList<ClientTypeMdb> testCollection = mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).find().into(new ArrayList<>());
+        Assertions.assertEquals(testCollection.size(), 0);
+        ClientTypeMdb testEntity = ClientMdb.clientTypeToClientTypeMdb(TestData.getClient1());
+        mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).insertOne(testEntity);
+        testCollection = mongoDatabase.getCollection("testCollection", ClientTypeMdb.class).find().into(new ArrayList<>());
+        Assertions.assertEquals(testEntity, testCollection.getFirst());
+        AbstractMongoRepository.decrementCounter();
+    }
 
 
     @Test
@@ -110,9 +119,8 @@ public class ClientRegisterManagerTest {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(1)
     public void clientDeletingSuccessFully() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
             Assertions.assertEquals(0, clientRegisterManager.getAllClients().size());
 
             Client client1 = TestData.getClient1();
@@ -120,36 +128,38 @@ public class ClientRegisterManagerTest {
 
             clientRegisterManager.clientRegister(client1);
             clientRegisterManager.clientRegister(client2);
+
             Assertions.assertEquals(2,
                     clientRegisterManager.getAllClients().size());
-            clientRegisterManager.clientDelete(
-                    clientRegisterManager.getAllClients().get(0));
+
+            clientRegisterManager.clientDelete(clientRegisterManager.getAllClients().get(0));
+
             Assertions.assertEquals(1,
                     clientRegisterManager.getAllClients().size());
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
     }
-//
-//    @Test
-//    @org.junit.jupiter.api.Order(3)
-//    public void clientUpdateAddress() {
-//
-//        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
-//            Client client = TestData.getClient1();
-//
-//            clientRegisterManager.clientRegister(client);
-//            Address address = new Address(
-//                    "Warszawa", "Ksiestwo Warszawskie",
-//                    "14-10", "Grunwaldzka", "1");
-//            client = clientRegisterManager.getAllClients().get(0);
-//            clientRegisterManager.clientUpdateAddress(client, address);
-//            Assertions.assertEquals(address,
-//                    clientRegisterManager.getAllClients().get(0).getAddress());
-//
-//        } catch (Exception e) {
-//            Assertions.fail(e.getMessage());
-//        }
-//    }
 
+    @Test
+    public void clientUpdateAddress() {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
+            Client client = TestData.getClient1();
+            clientRegisterManager.clientRegister(client);
+            Address address = new Address(
+                    "Warszawa", "Ksiestwo Warszawskie",
+                    "14-10", "Grunwaldzka", "1");
+            client = clientRegisterManager.getAllClients().getFirst();
+            clientRegisterManager.clientUpdateAddress(client, address);
+            Assertions.assertEquals(address,
+                    clientRegisterManager.getAllClients().getFirst().getAddress());
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+    @AfterAll
+    public static void closeVirtualConnection() {
+        AbstractMongoRepository.decrementCounter();
+    }
 }

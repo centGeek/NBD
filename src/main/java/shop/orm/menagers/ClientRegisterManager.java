@@ -9,10 +9,15 @@ import shop.orm.repository.ClientRegisterRepository;
 
 import java.util.List;
 
-public class ClientRegisterManager implements AutoCloseable{
-    private final ClientRegisterRepository clientRegisterRepository ;
+public class ClientRegisterManager implements AutoCloseable {
+    private final ClientRegisterRepository clientRegisterRepository;
+
     public ClientRegisterManager() {
         this.clientRegisterRepository = new ClientRegisterRepository();
+    }
+
+    public ClientRegisterManager(String nameOfCollection) {
+        this.clientRegisterRepository = new ClientRegisterRepository(nameOfCollection);
     }
 
     public void clientRegister(Client client) {

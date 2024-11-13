@@ -13,23 +13,23 @@ import java.util.UUID;
 public class ClientMdb extends AbstractEntityMdb {
     @BsonCreator
     public ClientMdb(@BsonProperty("_id") String _id,
-                     //@BsonProperty("clientType") ClientTypeMdb clientType,
+                     @BsonProperty("clientType") ClientTypeMdb clientType,
                      @BsonProperty("address") AddressMdb addresMdb
     ) {
         super(_id);
         this.addressMdb = addresMdb;
-        //this.clientTypeMdb = clientType;
+        this.clientTypeMdb = clientType;
     }
 
     public ClientMdb(Client client) {
         super(client.getId().toString());
-        //this.clientTypeMdb = clientTypeToClientTypeMdb(client);
+        this.clientTypeMdb = clientTypeToClientTypeMdb(client);
         this.addressMdb = new AddressMdb(client.getAddress(), client.getId().toString());
     }
 
-//
-//    @BsonProperty("clientType")
-//    private ClientTypeMdb clientTypeMdb;
+
+    @BsonProperty("clientType")
+    private ClientTypeMdb clientTypeMdb;
 
     @BsonProperty("address")
     private AddressMdb addressMdb;
@@ -39,9 +39,9 @@ public class ClientMdb extends AbstractEntityMdb {
     }
 
 
-//    public ClientTypeMdb getClientTypeMdb() {
-//        return clientTypeMdb;
-//    }
+    public ClientTypeMdb getClientTypeMdb() {
+        return clientTypeMdb;
+    }
 
     public static ClientTypeMdb clientTypeToClientTypeMdb(Client client) {
         ClientType clientType = client.getClientType();
@@ -54,14 +54,15 @@ public class ClientMdb extends AbstractEntityMdb {
             String email = extractValue(clientTypeString, "email='", "'");
             String birthDate = extractValue(clientTypeString, "birthDate=", "}");
 
-            clientTypeMdb = new IndividualClientMdb(client.getId().toString(), clientType.getPesel(), email, birthDate);
+            //TODO SPRAWDZIC
+            clientTypeMdb = new IndividualClientMdb(client.getId().toString(),/* clientType.getPesel(),*/ email, birthDate);
 
         } else if (clientTypeString.startsWith("CompanyClient")) {
             // Parsowanie informacji z CompanyClient
             String companyName = extractValue(clientTypeString, "companyName='", "'");
             String nip = extractValue(clientTypeString, "NIP=", "}");
 
-            clientTypeMdb = new CompanyClientMdb(client.getId().toString(), clientType.getPesel(), companyName, nip);
+            clientTypeMdb = new CompanyClientMdb(client.getId().toString(),/* clientType.getPesel(),*/ companyName, nip);
         }
 
         return clientTypeMdb;

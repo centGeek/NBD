@@ -3,29 +3,45 @@ package shop.orm.repository;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import shop.orm.model.Address;
 import shop.orm.model.Client;
 import shop.orm.model.ClientType;
 import shop.orm.model.IndividualClient;
+import shop.orm.repository.MongoDBClasses.AddressMdb;
 import shop.orm.repository.MongoDBClasses.ClientMdb;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ClientRegisterRepository extends AbstractMongoRepository {
 
     private final MongoDatabase database;
+    private final String nameOfCollection;
 
     protected static final Logger logger = LogManager.getLogger(ClientRegisterRepository.class);
 
     public ClientRegisterRepository() {
         this.database = AbstractMongoRepository.getDatabase();
+        this.nameOfCollection = "clients";
     }
+
+    public ClientRegisterRepository(String nameOfCollection) {
+        this.database = AbstractMongoRepository.getDatabase();
+        this.nameOfCollection = nameOfCollection;
+        MongoCollection<Document> collection = database.getCollection(nameOfCollection);
+        collection.drop();
+        database.createCollection(nameOfCollection);
+    }
+
+
 
 
     public void clientRegister(Client client) {
@@ -35,7 +51,7 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
 
             //List<ClientType> clientByPesel = this.getClientByPesel(pesel);
             //if (clientByPesel.isEmpty()) {
-            MongoCollection<ClientMdb> collection = database.getCollection("clients", ClientMdb.class);
+            MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
             ClientMdb clientMdb = new ClientMdb(client);
             collection.insertOne(clientMdb);
 //                entityManager.getTransaction().begin();
@@ -53,18 +69,26 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
 
     public void clientDelete(Client client) {
         try {
-            MongoCollection<ClientMdb> collection = database.getCollection("clients", ClientMdb.class);
-            Bson filter = Filters.eq("client",client.getId().toString());
+            MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
+            Bson filter = Filters.eq("_id",client.getId().toString());
             collection.findOneAndDelete(filter);
         } catch (Exception e) {
-            //    if (entityManager.getTransaction().isActive()) {
-            //        entityManager.getTransaction().rollback();
-            //    }
             logger.log(Level.ERROR, e);
         }
     }
 
     public void clientUpdateAddress(Client client, Address address) {
+
+        MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
+        Bson filter = Filters.eq("_id",client.getId().toString());
+        ArrayList <ClientMdb> arrayList = collection.find(filter).into(new ArrayList<>());
+        if(arrayList.size()==1){
+            Bson update = Updates.set("address",new AddressMdb(address,client.getId().toString()));
+            collection.updateOne(filter,update);
+            client.setAddress(address);
+        }
+
+
         try {
             //entityManager.getTransaction().begin();
 
@@ -83,27 +107,25 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
     }
 
     public List<Client> getAllClients() {
-        //String selectQuery = "SELECT c FROM Client c";
-        //entityManager.getTransaction().begin();
-        //Query query = entityManager.createQuery(selectQuery);
-        //List<Client> clients = query.getResultList();
-        //entityManager.getTransaction().commit();
-        //return clients;
-
-
-
-        MongoCollection<ClientMdb> clientMdbMongoCollection = database.getCollection("clients", ClientMdb.class);
+        MongoCollection<ClientMdb> clientMdbMongoCollection = database.getCollection(nameOfCollection, ClientMdb.class);
         ArrayList<ClientMdb> clientMdbs = clientMdbMongoCollection.find().into(new ArrayList<>());
-        Address address = new Address("Zgierz", "Poland", "12-001", "Zbierzowa", "7");
         ArrayList<Client> clients = new ArrayList<>();
+
+
+        //TODO ewidentnie do porawienia
         for (ClientMdb clientMdb : clientMdbs) {
-            clients.add(new Client(address, new IndividualClient("03222222111", "email2@gmail.com", LocalDate.of(2022, 10, 21))));
+            clients.add(new Client(UUID.fromString(clientMdb.getEntityId()),AddressMdb.AddresMdbToAddress(clientMdb.getAddressMdb()),
+                    new IndividualClient("03222222111", "email2@gmail.com",
+                            LocalDate.of(2022, 10, 21))));
         }
 
         return clients;
     }
 
     public List<ClientType> getClientByPesel(String pesel) {
+
+
+
         //String selectQuery = "SELECT ct FROM ClientType ct where ct.pesel =:pesel";
         //TypedQuery<ClientType> query = entityManager.createQuery(selectQuery, ClientType.class);
         //query.setParameter("pesel", pesel);

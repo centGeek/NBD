@@ -4,6 +4,8 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
+import java.util.Objects;
+
 @BsonDiscriminator(key = "_clazz",value = "Individual")
 public class IndividualClientMdb extends ClientTypeMdb {
 
@@ -11,10 +13,10 @@ public class IndividualClientMdb extends ClientTypeMdb {
     @BsonCreator
     public IndividualClientMdb(
             @BsonProperty("_id") String _id,
-            @BsonProperty("pesel") String pesel,
+//            @BsonProperty("pesel") String pesel,
             @BsonProperty("email") String email,
             @BsonProperty("birthDate") String birthData) {
-        super(pesel,_id);
+        super(_id);
         this.email = email;
         this.birthData = birthData;
     }
@@ -33,5 +35,18 @@ public class IndividualClientMdb extends ClientTypeMdb {
 
     public String getBirthData() {
         return birthData;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IndividualClientMdb that = (IndividualClientMdb) o;
+        return Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getBirthData(), that.getBirthData());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getBirthData());
     }
 }
