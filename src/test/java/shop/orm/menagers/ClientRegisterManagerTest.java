@@ -26,20 +26,19 @@ public class ClientRegisterManagerTest {
     @Test
     public void addingTestCorrectly() {
         try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
-            //clientRegisterManager.clientDelete(TestData.getClient2());
             Client client = TestData.getClient1();
             clientRegisterManager.clientRegister(client);
             Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
 
-            //clientRegisterManager.clientRegister(client);
+            Assertions.assertThrows(RuntimeException.class, () -> clientRegisterManager.clientRegister(client));
 
-            //Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
+            Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
 
-            client = TestData.getClient3();
-            //clientRegisterManager.clientRegister(client);
+            Client client2 = TestData.getClient3();
+            clientRegisterManager.clientRegister(client2);
             //System.out.println(clientRegisterManager.getAllClients());
 
-            //Assertions.assertEquals(2, clientRegisterManager.getAllClients().size());
+            Assertions.assertEquals(2, clientRegisterManager.getAllClients().size());
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
@@ -132,7 +131,7 @@ public class ClientRegisterManagerTest {
             Assertions.assertEquals(2,
                     clientRegisterManager.getAllClients().size());
 
-            clientRegisterManager.clientDelete(clientRegisterManager.getAllClients().get(0));
+            clientRegisterManager.clientDelete(clientRegisterManager.getAllClients().getFirst());
 
             Assertions.assertEquals(1,
                     clientRegisterManager.getAllClients().size());

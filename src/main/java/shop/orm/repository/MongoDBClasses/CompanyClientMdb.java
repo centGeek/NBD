@@ -11,10 +11,10 @@ public class CompanyClientMdb extends ClientTypeMdb {
     @BsonCreator
     public CompanyClientMdb(
             @BsonProperty("_id") String _id,
-            //@BsonProperty("pesel") String pesel,
+            @BsonProperty("pesel") String pesel,
             @BsonProperty("companyName") String companyNameMdb,
             @BsonProperty("nip") String NIPMdb) {
-        super(_id);
+        super(_id,pesel);
         this.companyNameMdb = companyNameMdb;
         this.NIPMdb = NIPMdb;
     }

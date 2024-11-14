@@ -13,10 +13,10 @@ public class IndividualClientMdb extends ClientTypeMdb {
     @BsonCreator
     public IndividualClientMdb(
             @BsonProperty("_id") String _id,
-//            @BsonProperty("pesel") String pesel,
+            @BsonProperty("pesel") String pesel,
             @BsonProperty("email") String email,
             @BsonProperty("birthDate") String birthData) {
-        super(_id);
+        super(_id,pesel);
         this.email = email;
         this.birthData = birthData;
     }

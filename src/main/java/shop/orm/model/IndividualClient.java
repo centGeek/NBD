@@ -9,11 +9,13 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 
-@Setter
+
 @Getter
 
 public class IndividualClient extends ClientType {
+    @Getter
     private String email;
+    @Getter
     private LocalDate birthDate;
 
     public IndividualClient(String pesel, String email, LocalDate birthDate) {

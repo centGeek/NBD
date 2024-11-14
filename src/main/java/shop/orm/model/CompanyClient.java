@@ -1,11 +1,15 @@
 package shop.orm.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class CompanyClient extends ClientType {
+
+    @Getter
     private String companyName;
 
+    @Getter
     private long NIP;
 
     public CompanyClient(String pesel, long NIP, String companyName) {
@@ -21,4 +25,6 @@ public class CompanyClient extends ClientType {
                 ", NIP=" + NIP +
                 '}';
     }
+
+
 }

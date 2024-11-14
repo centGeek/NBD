@@ -17,12 +17,14 @@ public class ClientTypeMdbCodec implements Codec<ClientTypeMdb> {
         // Zapisz discriminator "_clazz" na podstawie typu obiektu
         if (clientTypeMdb instanceof CompanyClientMdb company) {
             writer.writeString("_id", company.getEntityId());
+            writer.writeString("pesel", company.getPesel());
             writer.writeString("_clazz", "Company");
             writer.writeString("companyName", company.getCompanyNameMdb());
             writer.writeString("nip", company.getNIPMdb());
 
         } else if (clientTypeMdb instanceof IndividualClientMdb individual) {
             writer.writeString("_id", individual.getEntityId());
+            writer.writeString("pesel", individual.getPesel());
             writer.writeString("_clazz", "Individual");
             writer.writeString("email", individual.getEmail());
             writer.writeString("birthData", individual.getBirthData());
@@ -40,7 +42,7 @@ public class ClientTypeMdbCodec implements Codec<ClientTypeMdb> {
     public ClientTypeMdb decode(BsonReader reader, DecoderContext decoderContext) {
         reader.readStartDocument();
         String id = reader.readString("_id");
-
+        String pesel = reader.readString("pesel");
         String clazz = reader.readString("_clazz");
         ClientTypeMdb clientType = null;
 
@@ -48,11 +50,11 @@ public class ClientTypeMdbCodec implements Codec<ClientTypeMdb> {
         if ("Company".equals(clazz)) {
             String companyName = reader.readString("companyName");
             String nip = reader.readString("nip");
-            clientType = new CompanyClientMdb(UUID.randomUUID().toString(), companyName, nip);
+            clientType = new CompanyClientMdb(id, pesel, companyName, nip);
         } else if ("Individual".equals(clazz)) {
             String email = reader.readString("email");
             String birthData = reader.readString("birthData");
-            clientType = new IndividualClientMdb(UUID.randomUUID().toString(), email, birthData);
+            clientType = new IndividualClientMdb(id, pesel, email, birthData);
         }
 
         reader.readEndDocument();

@@ -2,10 +2,7 @@ package shop.orm.repository.MongoDBClasses;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-import shop.orm.model.Address;
-import shop.orm.model.Client;
-import shop.orm.model.ClientType;
-import shop.orm.model.CompanyClient;
+import shop.orm.model.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -47,40 +44,52 @@ public class ClientMdb extends AbstractEntityMdb {
         ClientType clientType = client.getClientType();
         ClientTypeMdb clientTypeMdb = null;
 
-        String clientTypeString = clientType.toString();
+        String pesel = clientType.getPesel();
 
-        if (clientTypeString.startsWith("IndividualClient")) {
-            // Parsowanie informacji z IndividualClient
-            String email = extractValue(clientTypeString, "email='", "'");
-            String birthDate = extractValue(clientTypeString, "birthDate=", "}");
 
-            //TODO SPRAWDZIC
-            clientTypeMdb = new IndividualClientMdb(client.getId().toString(),/* clientType.getPesel(),*/ email, birthDate);
+        if (clientType instanceof IndividualClient individualClient) {
+            String email = individualClient.getEmail();
+            String birthDate = individualClient.getBirthDate().toString();
 
-        } else if (clientTypeString.startsWith("CompanyClient")) {
-            // Parsowanie informacji z CompanyClient
-            String companyName = extractValue(clientTypeString, "companyName='", "'");
-            String nip = extractValue(clientTypeString, "NIP=", "}");
+            clientTypeMdb = new IndividualClientMdb(client.getId().toString(), pesel, email, birthDate);
+        } else if (clientType instanceof CompanyClient companyClient) {
+            String companyName = companyClient.getCompanyName();
+            String nip = Long.toString(companyClient.getNIP());
 
-            clientTypeMdb = new CompanyClientMdb(client.getId().toString(),/* clientType.getPesel(),*/ companyName, nip);
+            clientTypeMdb = new CompanyClientMdb(client.getId().toString(), clientType.getPesel(), companyName, nip);
         }
 
         return clientTypeMdb;
     }
 
-    // Metoda pomocnicza do wyciągania wartości z toString()
-    private static String extractValue(String source, String prefix, String suffix) {
-        int startIndex = source.indexOf(prefix) + prefix.length();
-        int endIndex = source.indexOf(suffix, startIndex);
-        return source.substring(startIndex, endIndex);
+
+    public static ClientType clientTypeMdbToClientType(ClientTypeMdb clientTypeMdb) {
+
+        ClientType clientType = null;
+
+        String pesel = clientTypeMdb.getPesel();
+
+
+        if (clientTypeMdb instanceof IndividualClientMdb individualClientMdb) {
+            String email = individualClientMdb.getEmail();
+            String birthDate = individualClientMdb.getBirthData();
+            clientType = new IndividualClient(pesel, email, LocalDate.parse(birthDate));
+
+        } else if (clientTypeMdb instanceof CompanyClientMdb companyClientMdb) {
+            String companyName = companyClientMdb.getCompanyNameMdb();
+            String nip = companyClientMdb.getNIPMdb();
+
+            clientType = new CompanyClient(clientTypeMdb.getPesel(), Long.parseLong(nip, 10), companyName);
+        }
+
+        return clientType;
     }
 
-//    //TODO tutaj zacząć ogarniać to ClientType
-//    public static Client ClientMdbToClient (ClientMdb clientMdb){
-//       AddressMdb addressMdb = clientMdb.getAddressMdb();
-//        Address address = AddressMdb.AddresMdbToAddress(addressMdb);
-//        return new Client(address);
-//    }
+    public static Client ClientMdbToClient(ClientMdb clientMdb) {
+        AddressMdb addressMdb = clientMdb.getAddressMdb();
+        Address address = AddressMdb.AddresMdbToAddress(addressMdb);
+        return new Client(UUID.fromString(clientMdb.getEntityId()), address, clientTypeMdbToClientType(clientMdb.getClientTypeMdb()));
+    }
 
 }
 

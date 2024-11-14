@@ -21,11 +21,11 @@ public class AddressMdb extends AbstractEntityMdb {
     @BsonCreator
     public AddressMdb(
             @BsonProperty("_id") String id,
-            @BsonProperty("city")          String city,
-            @BsonProperty("country")          String country,
-            @BsonProperty("postal_code")          String postal_code,
-            @BsonProperty("street")          String street,
-            @BsonProperty("street_number")          String street_number) {
+            @BsonProperty("city") String city,
+            @BsonProperty("country") String country,
+            @BsonProperty("postal_code") String postal_code,
+            @BsonProperty("street") String street,
+            @BsonProperty("street_number") String street_number) {
         super(id);
         this.city = city;
         this.country = country;
@@ -44,8 +44,8 @@ public class AddressMdb extends AbstractEntityMdb {
         this.street_number = address.getStreet_number();
     }
 
-    public static Address AddresMdbToAddress(AddressMdb addressMdb){
-        return new Address(addressMdb.getCity(),addressMdb.getCountry(),addressMdb.getPostal_code(),addressMdb.getStreet(),addressMdb.getStreet_number());
+    public static Address AddresMdbToAddress(AddressMdb addressMdb) {
+        return new Address(addressMdb.getCity(), addressMdb.getCountry(), addressMdb.getPostal_code(), addressMdb.getStreet(), addressMdb.getStreet_number());
     }
 
     public String getCity() {
