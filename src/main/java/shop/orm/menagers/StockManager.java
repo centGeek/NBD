@@ -13,7 +13,7 @@ public class StockManager implements AutoCloseable {
         this.stockRepository = new StockRepository();
     }
 
-    public StockManager(String nameOfCollection){
+    public StockManager(String nameOfCollection) {
         this.stockRepository = new StockRepository(nameOfCollection);
     }
 
@@ -36,6 +36,10 @@ public class StockManager implements AutoCloseable {
 
     public List<Product> getAllProductsAvailable() {
         return stockRepository.getAllProductsAvailable();
+    }
+
+    public void deleteProduct(Product product) {
+        this.stockRepository.deleteProduct(product);
     }
 
     @Override

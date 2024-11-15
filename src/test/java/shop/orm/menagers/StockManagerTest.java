@@ -1,20 +1,29 @@
 package shop.orm.menagers;
 
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import shop.orm.menagers.TestData;
+import org.junit.jupiter.api.*;
 import shop.orm.model.Product;
+import shop.orm.repository.AbstractMongoRepository;
 
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.List;
 
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StockManagerTest {
 
+    @BeforeAll
+    public static void setUp() {
+        AbstractMongoRepository.getDatabase();
+    }
+
     @Test
-    public void addingProductsCorrectly() {
-        try (StockManager stockManager = new StockManager("stockTest")) {
+    @Order(1)
+    public void addingAndDeletingProductsCorrectly() {
+        try (StockManager stockManager = new StockManager("testStock")) {
 
             int prevSize = stockManager.getAllProductsAvailable().size();
             Product product = TestData.getProduct2();
@@ -27,6 +36,10 @@ public class StockManagerTest {
             allProductsByName = stockManager.getAllProductsByName(product.getProductName());
             Assertions.assertEquals(prevSize + 10, allProductsByName.size());
 
+            stockManager.deleteProduct(allProductsByName.getFirst());
+
+            Assertions.assertEquals(prevSize + 9, stockManager.getAllProductsByName(product.getProductName()).size());
+
 
         } catch (Exception e) {
             Assertions.fail(e);
@@ -34,10 +47,11 @@ public class StockManagerTest {
     }
 
     @Test
+    @Order(2)
     public void changingProductPriceCorrectly() {
         Product product = TestData.getProduct1();
 
-        try (StockManager stockManager = new StockManager("stockTest")) {
+        try (StockManager stockManager = new StockManager("testStock")) {
             for (int i = 0; i < 2; i++) {
                 stockManager.addProductToDatabase(product.getProductName(), product.getPrice());
             }
@@ -48,15 +62,62 @@ public class StockManagerTest {
             for (Product prod : allProductsAvailable) {
                 Assertions.assertEquals(BigDecimal.valueOf(5), prod.getPrice());
             }
+        } catch (Exception e) {
+            Assertions.fail(e);
         }
-        catch (Exception e){
+    }
+
+    @Test
+    @Order(10)
+    public void primaryNodeDown() {
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "mongosh --host mongodb1:27017 --username admin --password adminpassword --authenticationDatabase admin --eval \"rs.status().members.filter(member => member.stateStr === 'PRIMARY')[0].name\" | tail -1 | cut -d : -f 1");
+
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            process.waitFor();
+            String toKill = output.toString();
+
+            ProcessBuilder processBuilder2 = new ProcessBuilder("cmd.exe", "/c", "docker stop " + toKill);
+            Process process2 = processBuilder2.start();
+            process2.waitFor();
+
+            Product product = TestData.getProduct1();
+
+            try (StockManager stockManager = new StockManager("testStock")) {
+                for (int i = 0; i < 2; i++) {
+                    stockManager.addProductToDatabase(product.getProductName(), product.getPrice());
+                }
+                stockManager.addProductToDatabase(product.getProductName() + "d", product.getPrice());
+
+                stockManager.changeProductPrice(product.getProductName(), BigDecimal.valueOf(5));
+                List<Product> allProductsAvailable = stockManager.getAllProductsByName(product.getProductName());
+                for (Product prod : allProductsAvailable) {
+                    Assertions.assertEquals(BigDecimal.valueOf(5), prod.getPrice());
+                }
+            } catch (Exception e) {
+                Assertions.fail(e);
+            }
+
+            ProcessBuilder processBuilder3 = new ProcessBuilder("cmd.exe", "/c", "docker start " + toKill);
+            Process process3 = processBuilder3.start();
+            process3.waitFor();
+            Thread.sleep(3000);
+
+        } catch (Exception e) {
             Assertions.fail(e);
         }
     }
 
     @AfterAll
     public static void closeAll() {
-
+        AbstractMongoRepository.decrementCounter();
     }
-
 }

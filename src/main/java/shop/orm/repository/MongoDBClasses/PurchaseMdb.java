@@ -3,6 +3,7 @@ package shop.orm.repository.MongoDBClasses;
 import lombok.Getter;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import shop.orm.model.Client;
 import shop.orm.model.Product;
@@ -14,11 +15,25 @@ import java.util.UUID;
 
 public class PurchaseMdb extends AbstractEntityMdb {
 
-    @BsonCreator
+
     public PurchaseMdb(Purchase purchase) {
         super(purchase.getId().toString());
         this.client = new ClientMdb(purchase.getClient());
-        //this.products = purchase.getProducts();
+        List<Product> products = purchase.getProducts();
+        for (Product product : products) {
+            this.products.add(new ProductMdb(product));
+        }
+    }
+
+    @BsonCreator
+    public PurchaseMdb(
+            @BsonProperty("_id") String id,
+            @BsonProperty("client") ClientMdb clientMdb,
+            @BsonProperty("products") List<ProductMdb> products
+    ) {
+        super(id);
+        this.client = clientMdb;
+        this.products = products != null ? products : new ArrayList<>();
     }
 
     @BsonProperty("client")
@@ -26,6 +41,32 @@ public class PurchaseMdb extends AbstractEntityMdb {
     @BsonProperty("products")
     private List<ProductMdb> products = new ArrayList<>();
 
+    public ClientMdb getClient() {
+        return client;
+    }
+
+    public List<ProductMdb> getProducts() {
+        return products;
+    }
+
+    public void buyProducts() {
+        for (ProductMdb product : products) {
+            product.buyProduct();
+        }
+    }
+
+
+    public static Purchase purchaseMdbToPurchase(PurchaseMdb purchaseMdb) {
+        List<ProductMdb> productMdbs = purchaseMdb.getProducts();
+        List<Product> productList = new ArrayList<>();
+        for (ProductMdb product : productMdbs) {
+            productList.add(ProductMdb.productFromProductMdb(product));
+        }
+        return new Purchase(
+                ClientMdb.ClientMdbToClient(purchaseMdb.getClient()),
+                productList
+        );
+    }
 }
 
 

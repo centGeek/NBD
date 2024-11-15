@@ -17,31 +17,31 @@ public class ProductMdb extends AbstractEntityMdb {
             @BsonProperty("_id") String id,
             @BsonProperty("productName") String productName,
             @BsonProperty("price") BigDecimal price,
-            @BsonProperty("isProductBought") int isProductBought
+            @BsonProperty("productBoughtCounter") int productBoughtCounter
     ) {
         super(id);
         this.productName = productName;
         this.price = price;
-        this.isProductBought = isProductBought;
+        this.productBoughtCounter = productBoughtCounter;
     }
 
     public ProductMdb(Product product) {
         super(product.getId().toString());
         this.productName = product.getProductName();
         this.price = product.getPrice();
-        this.isProductBought = product.isProductBought() ? 1 : 0;
+        this.productBoughtCounter = product.isProductBought() ? 1 : 0;
     }
 
     @BsonProperty("productName")
     private String productName;
     @BsonProperty("price")
     private BigDecimal price;
-    @BsonProperty("isProductBought")
-    private int isProductBought;
+    @BsonProperty("productBoughtCounter")
+    private int productBoughtCounter;
 
 
     public static Product productFromProductMdb(ProductMdb productMdb) {
-        return new Product(productMdb.getProductName(), productMdb.getPrice(), productMdb.isProductBought(), UUID.fromString(productMdb.getEntityId()));
+        return new Product(productMdb.getProductName(), productMdb.getPrice(), productMdb.isProductCounterBought(), UUID.fromString(productMdb.getEntityId()));
     }
 
     public String getProductName() {
@@ -52,13 +52,19 @@ public class ProductMdb extends AbstractEntityMdb {
         return price;
     }
 
-    public int getIsProductBought() {
-        return isProductBought;
+    public int getProductBoughtCounter() {
+        return productBoughtCounter;
     }
 
-    public boolean isProductBought() {
-        return isProductBought == 1;
+    public boolean isProductCounterBought() {
+        return productBoughtCounter == 1;
     }
+
+    public void buyProduct() {
+        productBoughtCounter++;
+    }
+
+
 
     public void setPrice(BigDecimal price) {
         this.price = price;

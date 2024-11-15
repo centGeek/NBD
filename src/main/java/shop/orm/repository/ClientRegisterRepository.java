@@ -52,11 +52,6 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
                 MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
                 ClientMdb clientMdb = new ClientMdb(client);
                 collection.insertOne(clientMdb);
-//                entityManager.getTransaction().begin();
-//                entityManager.persist(client.getAddress());
-//                entityManager.persist(client.getClientType());
-//                entityManager.persist(client);
-//                entityManager.getTransaction().commit();
             } else {
                 logger.log(Level.ERROR, String.format("Can not register client. Client with pesel: %s already exists", pesel));
                 throw new RuntimeException("Can not register client. Client with pesel: " + pesel + " already exists");
@@ -87,23 +82,6 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
             collection.updateOne(filter, update);
             client.setAddress(address);
         }
-
-
-        try {
-            //entityManager.getTransaction().begin();
-
-//            if (address.getAddressId() == null) {
-//                //    entityManager.persist(address);
-//            }
-//            client.setAddress(address);
-            //entityManager.merge(client);
-            //entityManager.getTransaction().commit();
-        } catch (Exception e) {
-//            if (entityManager.getTransaction().isActive()) {
-//                entityManager.getTransaction().rollback();
-//            }
-            logger.log(Level.ERROR, e);
-        }
     }
 
     public List<Client> getAllClients() {
@@ -112,7 +90,6 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
         ArrayList<Client> clients = new ArrayList<>();
 
 
-        //TODO ewidentnie do porawienia
         for (ClientMdb clientMdb : clientMdbs) {
             clients.add(ClientMdb.ClientMdbToClient(clientMdb));
 //                    UUID.fromString(clientMdb.getEntityId()), AddressMdb.AddresMdbToAddress(clientMdb.getAddressMdb()),

@@ -1,5 +1,6 @@
 package shop.orm.menagers;
 
+import shop.orm.model.Client;
 import shop.orm.model.Product;
 import shop.orm.model.Purchase;
 import shop.orm.repository.PurchaseRepository;
@@ -17,8 +18,8 @@ public class PurchaseManager implements AutoCloseable {
         this.purchaseRepository = new PurchaseRepository(nameOfCollection);
     }
 
-    public List<Purchase> getAllPurchasesByClient(long clientId) {
-        return purchaseRepository.getAllPurchasesByClient(clientId);
+    public List<Purchase> getAllPurchasesByClient(Client client) {
+        return purchaseRepository.getAllPurchasesByClient(client);
     }
 
     public void makeAPurchase(Purchase purchase) {

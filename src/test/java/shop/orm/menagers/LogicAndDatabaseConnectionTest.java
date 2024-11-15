@@ -1,8 +1,6 @@
 //package shop.orm.menagers;
 //
-//import jakarta.persistence.EntityManager;
-//import jakarta.persistence.EntityManagerFactory;
-//import jakarta.persistence.Persistence;
+//
 //import shop.orm.menagers.TestData;
 //import shop.orm.menagers.ClientRegisterManager;
 //import shop.orm.menagers.PurchaseManager;
@@ -15,25 +13,24 @@
 //public class LogicAndDatabaseConnectionTest {
 //    public static void main(String[] args) {
 //        //Client Registering, Client selecting
-//        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("NBD-unit");
-//        EntityManager entityManager = entityManagerFactory.createEntityManager();
+//
 //
 //        Client client = TestData.getClient1();
 //        ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
-//        clientRegisterManager.clientRegister(client, entityManager);
-//        clientRegisterManager.clientRegister(client, entityManager);
+//        clientRegisterManager.clientRegister(client);
+//        clientRegisterManager.clientRegister(client );
 //
-//        List<Client> allClients = clientRegisterManager.getAllClients(entityManager);
+//        List<Client> allClients = clientRegisterManager.getAllClients();
 //        System.out.println(allClients.toString());
 //        //Adding products
 //        StockManager stockManager = new StockManager();
-//        stockManager.addProductToDatabase(entityManager, "snickers", BigDecimal.valueOf(15));
-//        stockManager.addProductToDatabase(entityManager, "snickers", BigDecimal.valueOf(15));
-//        stockManager.addProductToDatabase(entityManager, "snickers", BigDecimal.valueOf(15));
-//        stockManager.addProductToDatabase(entityManager, "mars", BigDecimal.valueOf(30));
+//        stockManager.addProductToDatabase( "snickers", BigDecimal.valueOf(15));
+//        stockManager.addProductToDatabase( "snickers", BigDecimal.valueOf(15));
+//        stockManager.addProductToDatabase( "snickers", BigDecimal.valueOf(15));
+//        stockManager.addProductToDatabase( "mars", BigDecimal.valueOf(30));
 //        //Purchasing
 //        while (true) {
-//            List<Product> allProductsAvailable = stockManager.getAllProductsAvailable(entityManager);
+//            List<Product> allProductsAvailable = stockManager.getAllProductsAvailable();
 //            if (allProductsAvailable.isEmpty()) {
 //                System.out.println("Brak dostepnych produktow");
 //                break;
@@ -59,8 +56,7 @@
 //                String productName = scanner.nextLine();
 //
 //                if ("exit".equalsIgnoreCase(productName)) {
-//                    entityManagerFactory.close();
-//                    entityManager.close();
+//
 //                    return;
 //                }
 //                if (!productCountMap.containsKey(productName)) {
@@ -94,7 +90,7 @@
 //            if (!productList.isEmpty()) {
 //                Purchase purchase = new Purchase(client, productList);
 //                PurchaseManager purchaseManager = new PurchaseManager();
-//                purchaseManager.makeAPurchase(entityManager, purchase);
+//                purchaseManager.makeAPurchase( purchase);
 //
 //                System.out.println("Your purchase was successful!");
 //                System.out.println(purchaseManager.getAllPurchasesByClient(entityManager, client.getId()));

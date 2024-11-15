@@ -30,7 +30,7 @@ public class StockRepository extends AbstractMongoRepository {
                         {
                             $jsonSchema: {
                                 "bsonType": "object",
-                                "required": [ "productName", "price", "isProductBought" ],
+                                "required": [ "productName", "price", "productBoughtCounter" ],
                                 "properties": {
                                     "productName": {
                                         "bsonType": "string",
@@ -42,7 +42,7 @@ public class StockRepository extends AbstractMongoRepository {
                                         "minimum": 0.0,
                                         "description": "must be a positive decimal number"
                                     },
-                                    "isProductBought": {
+                                    "productBoughtCounter": {
                                         "bsonType": "int",
                                         "minimum": 0,
                                         "maximum": 1,
@@ -69,7 +69,7 @@ public class StockRepository extends AbstractMongoRepository {
                         {
                             $jsonSchema: {
                                 "bsonType": "object",
-                                "required": [ "productName", "price", "isProductBought" ],
+                                "required": [ "productName", "price", "productBoughtCounter" ],
                                 "properties": {
                                     "productName": {
                                         "bsonType": "string",
@@ -81,7 +81,7 @@ public class StockRepository extends AbstractMongoRepository {
                                         "minimum": 0.0,
                                         "description": "must be a positive decimal number"
                                     },
-                                    "isProductBought": {
+                                    "productBoughtCounter": {
                                         "bsonType": "int",
                                         "minimum": 0,
                                         "maximum": 1,
@@ -99,7 +99,7 @@ public class StockRepository extends AbstractMongoRepository {
         database.createCollection(nameOfCollection, createCollectionOptions);
     }
 
-    protected static final Logger logger = LogManager.getLogger(ClientRegisterRepository.class);
+    protected static final Logger logger = LogManager.getLogger(StockRepository.class);
 
     public void addProductToDatabase(Product product) {
         try {
@@ -118,7 +118,7 @@ public class StockRepository extends AbstractMongoRepository {
     public void changeProductPrice(String productName, BigDecimal productPrice) {
         Bson filter = Filters.and(
                 Filters.eq("productName", productName),
-                Filters.eq("isProductBought", 0));
+                Filters.eq("productBoughtCounter", 0));
         Bson update = Updates.set("price", productPrice);
 
         UpdateResult result = database.getCollection(nameOfCollection, ProductMdb.class)
@@ -142,11 +142,18 @@ public class StockRepository extends AbstractMongoRepository {
     }
 
     public List<Product> getAllProductsAvailable() {
-        ArrayList<ProductMdb> collection = database.getCollection(nameOfCollection, ProductMdb.class).find().into(new ArrayList<ProductMdb>());
+        Bson filter = Filters.eq("productBoughtCounter", 0);
+        ArrayList<ProductMdb> collection = database.getCollection(nameOfCollection, ProductMdb.class).find(filter).into(new ArrayList<ProductMdb>());
         ArrayList<Product> products = new ArrayList<>();
         for (ProductMdb productMdb : collection) {
             products.add(ProductMdb.productFromProductMdb(productMdb));
         }
         return products;
     }
+
+    public void deleteProduct(Product product) {
+        Bson filter = Filters.eq("productName", product.getProductName());
+        database.getCollection(nameOfCollection, ProductMdb.class).deleteOne(filter);
+    }
+
 }
