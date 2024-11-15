@@ -64,8 +64,6 @@ public class ProductMdb extends AbstractEntityMdb {
         productBoughtCounter++;
     }
 
-
-
     public void setPrice(BigDecimal price) {
         this.price = price;
     }

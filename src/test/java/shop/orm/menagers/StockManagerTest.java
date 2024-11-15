@@ -67,10 +67,14 @@ public class StockManagerTest {
         }
     }
 
+
+
+
     @Test
     @Order(10)
     public void primaryNodeDown() {
         try {
+            //You need to have tail,cut cmdlets on your computer!
             ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "mongosh --host mongodb1:27017 --username admin --password adminpassword --authenticationDatabase admin --eval \"rs.status().members.filter(member => member.stateStr === 'PRIMARY')[0].name\" | tail -1 | cut -d : -f 1");
 
             Process process = processBuilder.start();
@@ -111,11 +115,30 @@ public class StockManagerTest {
             process3.waitFor();
             Thread.sleep(3000);
 
+
+            ProcessBuilder processBuilder4 = new ProcessBuilder("cmd.exe", "/c", "mongosh --host mongodb1:27017 --username admin --password adminpassword --authenticationDatabase admin --eval \"use('shop'); db.testStock.validate()\" | grep valid | cut -d : -f 2 | tail -1 | cut -d ',' -f 1");
+            Process process4 = processBuilder4.start();
+
+            BufferedReader reader2 = new BufferedReader(new InputStreamReader(process4.getInputStream()));
+            StringBuilder output2 = new StringBuilder();
+            String line2;
+
+            while ((line2 = reader2.readLine()) != null) {
+                output2.append(line2).append("\n");
+            }
+
+            process4.waitFor();
+
+            String validateResult = output2.toString();
+            if (!validateResult.equals(" true\n")) {
+                throw new RuntimeException("node validation failure, maybe you don't have tail or cut cmdlets on you system");
+            }
+
+
         } catch (Exception e) {
             Assertions.fail(e);
         }
     }
-
     @AfterAll
     public static void closeAll() {
         AbstractMongoRepository.decrementCounter();

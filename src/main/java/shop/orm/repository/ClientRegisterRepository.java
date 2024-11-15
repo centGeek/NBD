@@ -11,15 +11,11 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import shop.orm.model.Address;
 import shop.orm.model.Client;
-import shop.orm.model.ClientType;
-import shop.orm.model.IndividualClient;
 import shop.orm.repository.MongoDBClasses.AddressMdb;
 import shop.orm.repository.MongoDBClasses.ClientMdb;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ClientRegisterRepository extends AbstractMongoRepository {
 

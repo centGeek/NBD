@@ -75,10 +75,43 @@ public class PurchaseManagerTest {
             Assertions.assertThrows(Exception.class, () -> purchaseManager.makeAPurchase(purchase2));
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Assertions.fail(e.getMessage());
         }
     }
 
+    @Test
+    public void changeClientAndDeleteTest() {
+        Client client1 = TestData.getClient1();
+        Client client2 = TestData.getClient2();
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager("testClients");
+             StockManager stockManager = new StockManager("testStock");
+            PurchaseManager purchaseManager = new PurchaseManager("testPurchase")
+        ) {
+
+            clientRegisterManager.clientRegister(client1);
+            clientRegisterManager.clientRegister(client2);
+            stockManager.addProductToDatabase("Pawelki", BigDecimal.valueOf(2));
+            List<Product> allProductsAvailable = stockManager.getAllProductsAvailable();
+            Purchase purchase1 = new Purchase(client1, allProductsAvailable);
+            purchaseManager.makeAPurchase(purchase1);
+
+            purchaseManager.changeClientForPurchase(purchase1,client2);
+
+            List<Purchase> purchaseList1 = purchaseManager.getAllPurchasesByClient(client1);
+            Assertions.assertEquals(0,purchaseList1.size());
+
+            List<Purchase> purchaseList = purchaseManager.getAllPurchasesByClient(client2);
+            Assertions.assertEquals(1,purchaseList.size());
+
+            purchaseManager.deletePurchase(purchase1);
+            purchaseList = purchaseManager.getAllPurchasesByClient(client2);
+            Assertions.assertEquals(0,purchaseList.size());
+
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+        }
+
+    }
 
     @AfterAll
     public static void closeVirtualConnection() {

@@ -24,6 +24,14 @@ public class PurchaseManager implements AutoCloseable {
         purchaseRepository.makeAPurchase(purchase);
     }
 
+    public void changeClientForPurchase(Purchase purchase, Client client){
+        this.purchaseRepository.changeClientForPurchase(purchase,client);
+    }
+
+    public void deletePurchase(Purchase purchase){
+        this.purchaseRepository.deletePurchase(purchase);
+    }
+
     @Override
     public void close() throws Exception {
        purchaseRepository.close();

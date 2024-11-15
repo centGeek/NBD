@@ -6,12 +6,14 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.conversions.Bson;
 import shop.orm.model.Client;
 import shop.orm.model.Product;
 import shop.orm.model.Purchase;
+import shop.orm.repository.MongoDBClasses.ClientMdb;
 import shop.orm.repository.MongoDBClasses.ProductMdb;
 import shop.orm.repository.MongoDBClasses.PurchaseMdb;
 
@@ -95,25 +97,22 @@ public class PurchaseRepository extends AbstractMongoRepository {
             clientSession.close();
         }
 
-//        List<Product> products = purchase.getProducts();
-//        try {
-//            entityManager.getTransaction().begin();
-//            for (Product product : products) {
-//                Product managedProduct = entityManager.find(Product.class, product.getId());
-//                this.buyAProduct(purchase, managedProduct);
-//            }
-//            entityManager.persist(purchase);
-//            entityManager.getTransaction().commit();
-//        } catch (OptimisticLockException optimisticLockException) {
-//            if (entityManager.getTransaction().isActive()) {
-//                entityManager.getTransaction().rollback();
-//            }
-//            logger.log(Level.ERROR, "Optimistic lock exception");
-//        } catch (Exception exception) {
-//            if (entityManager.getTransaction().isActive()) {
-//                entityManager.getTransaction().rollback();
-//            }
-//            logger.log(Level.ERROR, exception);
-//        }
+    }
+
+    public void changeClientForPurchase(Purchase purchase, Client client) {
+        Bson filter = Filters.eq("_id", purchase.getId().toString());
+        Bson update = Updates.set("client", new ClientMdb(client));
+        MongoCollection<PurchaseMdb> productMdbMongoCollection = database.getCollection(collectionPurchases, PurchaseMdb.class);
+        List<PurchaseMdb> list = productMdbMongoCollection.find(filter).into(new ArrayList<>());
+        UpdateResult updateResult =  productMdbMongoCollection.updateOne(filter, update);
+
+    }
+
+
+    public void deletePurchase(Purchase purchase){
+        Bson filter = Filters.eq("_id", purchase.getId().toString());
+        MongoCollection<PurchaseMdb> productMdbMongoCollection = database.getCollection(collectionPurchases, PurchaseMdb.class);
+        productMdbMongoCollection.deleteOne(filter);
     }
 }
+
