@@ -27,11 +27,9 @@ public class PurchaseManagerTest {
         Client client = TestData.getClient1();
         try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager("testClients");
              StockManager stockManager = new StockManager("testStock");
-             PurchaseManager purchaseManager = new PurchaseManager("testPurchase");
+             PurchaseManager purchaseManager = new PurchaseManager("testPurchase")
         ) {
             clientRegisterManager.clientRegister(client);
-            List<Client> allClients = clientRegisterManager.getAllClients();
-
 
             stockManager.addProductToDatabase("Pawelki", BigDecimal.valueOf(2));
             stockManager.addProductToDatabase("Pawelki", BigDecimal.valueOf(2));
@@ -48,7 +46,7 @@ public class PurchaseManagerTest {
             Assertions.assertEquals(1,
                     allPurchasesByClient.size());
             Assertions.assertEquals(5,
-                    allPurchasesByClient.get(0).getProducts().size());
+                    allPurchasesByClient.getFirst().getProducts().size());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -61,7 +59,7 @@ public class PurchaseManagerTest {
 
         try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager("testClients");
              StockManager stockManager = new StockManager("testStock");
-             PurchaseManager purchaseManager = new PurchaseManager("testPurchase");
+             PurchaseManager purchaseManager = new PurchaseManager("testPurchase")
         ) {
             clientRegisterManager.clientRegister(client1);
             clientRegisterManager.clientRegister(client2);

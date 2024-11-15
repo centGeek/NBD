@@ -121,7 +121,7 @@ public class StockRepository extends AbstractMongoRepository {
                 Filters.eq("productBoughtCounter", 0));
         Bson update = Updates.set("price", productPrice);
 
-        UpdateResult result = database.getCollection(nameOfCollection, ProductMdb.class)
+        database.getCollection(nameOfCollection, ProductMdb.class)
                 .updateMany(filter, update);
 
 
@@ -132,7 +132,7 @@ public class StockRepository extends AbstractMongoRepository {
     public List<Product> getAllProductsByName(String productName) {
 
         Bson filter = Filters.eq("productName", productName);
-        ArrayList<ProductMdb> collection = database.getCollection(nameOfCollection, ProductMdb.class).find(filter).into(new ArrayList<ProductMdb>());
+        ArrayList<ProductMdb> collection = database.getCollection(nameOfCollection, ProductMdb.class).find(filter).into(new ArrayList<>());
         ArrayList<Product> products = new ArrayList<>();
         for (ProductMdb productMdb : collection) {
             products.add(ProductMdb.productFromProductMdb(productMdb));
@@ -143,7 +143,7 @@ public class StockRepository extends AbstractMongoRepository {
 
     public List<Product> getAllProductsAvailable() {
         Bson filter = Filters.eq("productBoughtCounter", 0);
-        ArrayList<ProductMdb> collection = database.getCollection(nameOfCollection, ProductMdb.class).find(filter).into(new ArrayList<ProductMdb>());
+        ArrayList<ProductMdb> collection = database.getCollection(nameOfCollection, ProductMdb.class).find(filter).into(new ArrayList<>());
         ArrayList<Product> products = new ArrayList<>();
         for (ProductMdb productMdb : collection) {
             products.add(ProductMdb.productFromProductMdb(productMdb));

@@ -1,11 +1,9 @@
 package shop.orm.menagers;
 
 import shop.orm.model.Client;
-import shop.orm.model.Product;
 import shop.orm.model.Purchase;
 import shop.orm.repository.PurchaseRepository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class PurchaseManager implements AutoCloseable {
