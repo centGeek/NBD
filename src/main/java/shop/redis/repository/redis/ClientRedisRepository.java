@@ -1,46 +1,49 @@
 package shop.redis.repository.redis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import redis.clients.jedis.JedisCluster;
-import shop.redis.configuration.DatabaseConfiguration;
+import redis.clients.jedis.JedisPool;
+import shop.redis.configuration.JedisPoolConfiguration;
 import shop.redis.model.Client;
-import shop.redis.repository.entity.redisEntities.ClientRedis;
+
+import java.util.Optional;
 
 public class ClientRedisRepository {
-    private final JedisCluster jedisCluster;
+    private final JedisPool jedisPool;
 
     public ClientRedisRepository() {
-        this.jedisCluster = DatabaseConfiguration.getJedisCluster();
+        this.jedisPool = JedisPoolConfiguration.getPoolConfig();
     }
 
     public void add(Client client) {
         var objectMapper = new ObjectMapper();
-        try {
-            var clientRedis = new ClientRedis(client);
-            var json = objectMapper.writeValueAsString(clientRedis);
-            String redisKey = "clientRedis:" + clientRedis.getId();
-            jedisCluster.set(redisKey, json);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        objectMapper.findAndRegisterModules();
+        try (var jedis = jedisPool.getResource()) {
+            String json = objectMapper.writeValueAsString(client);
+            String redisKey = "clientRedis:" + client.getClientType().getPesel();
+            jedis.set(redisKey, json);
+            jedis.disconnect();
+        } catch (Exception ignored) {
+
         }
     }
-    public ClientRedis getClient(String clientId) {
-        try {
-            var redisKey = "clientRedis:" + clientId;
-            var json = jedisCluster.get(redisKey);
-            if (json != null) {
-                var objectMapper = new ObjectMapper();
-                return objectMapper.readValue(json, ClientRedis.class);
-            } else {
-                return null;
-            }
+
+    public Optional<Client> getClient(String pesel) {
+        var objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        try (var jedis = jedisPool.getResource()) {
+            var redisKey = "clientRedis:" + pesel;
+            var json = jedis.get(redisKey);
+            return Optional.of(objectMapper.readValue(json, Client.class));
         } catch (Exception e) {
             throw new RuntimeException("Error retrieving client from Redis", e);
         }
     }
+
     public void deleteClient(Client client) {
-        var redisKey = "clientRedis:" + client.getId();
-        jedisCluster.del(redisKey);
+        try (var jedis = jedisPool.getResource()) {
+            String redisKey = "client:" + client.getClientType().getPesel();
+            jedis.disconnect();
+            jedis.del(redisKey);
+        }
     }
 }

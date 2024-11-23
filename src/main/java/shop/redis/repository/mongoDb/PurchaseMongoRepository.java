@@ -13,9 +13,9 @@ import org.bson.conversions.Bson;
 import shop.redis.model.Client;
 import shop.redis.model.Product;
 import shop.redis.model.Purchase;
-import shop.redis.repository.entity.MongoDBClasses.ClientMdb;
-import shop.redis.repository.entity.MongoDBClasses.ProductMdb;
-import shop.redis.repository.entity.MongoDBClasses.PurchaseMdb;
+import shop.redis.repository.mongoEntity.ClientMdb;
+import shop.redis.repository.mongoEntity.ProductMdb;
+import shop.redis.repository.mongoEntity.PurchaseMdb;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -11,7 +11,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import shop.redis.repository.entity.MongoDBClasses.ClientTypeMdbCodec;
+import shop.redis.repository.mongoEntity.ClientTypeMdbCodec;
 
 import java.util.List;
 

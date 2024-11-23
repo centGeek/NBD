@@ -1,4 +1,4 @@
-package shop.redis.repository.entity.MongoDBClasses;
+package shop.redis.repository.mongoEntity;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;

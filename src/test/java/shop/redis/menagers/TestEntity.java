@@ -2,7 +2,7 @@ package shop.redis.menagers;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-import shop.redis.repository.entity.MongoDBClasses.AbstractEntityMdb;
+import shop.redis.repository.mongoEntity.AbstractEntityMdb;
 
 import java.util.UUID;
 

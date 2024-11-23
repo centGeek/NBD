@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @Setter
 @Getter
-
 public class Product {
     @Setter(AccessLevel.NONE)
     private UUID id;

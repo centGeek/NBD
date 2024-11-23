@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.bson.conversions.Bson;
 import shop.redis.model.Address;
 import shop.redis.model.Client;
-import shop.redis.repository.entity.MongoDBClasses.AddressMdb;
-import shop.redis.repository.entity.MongoDBClasses.ClientMdb;
+import shop.redis.repository.mongoEntity.AddressMdb;
+import shop.redis.repository.mongoEntity.ClientMdb;
 import shop.redis.repository.redis.ClientRedisRepository;
 
 import java.util.ArrayList;

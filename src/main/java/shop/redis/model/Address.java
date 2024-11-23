@@ -8,6 +8,7 @@ import java.util.UUID;
 
 
 @Getter
+@NoArgsConstructor
 public class Address {
 
     public Address(String city, String country, String postal_code, String street, String street_number) {

@@ -2,13 +2,14 @@ package shop.redis.model;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 
 
 @Getter
-
+@NoArgsConstructor
 public class IndividualClient extends ClientType {
     @Getter
     private String email;

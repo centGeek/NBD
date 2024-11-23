@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import shop.redis.model.Address;
 import shop.redis.model.Client;
 import shop.redis.repository.mongoDb.AbstractMongoRepository;
-import shop.redis.repository.entity.MongoDBClasses.ClientMdb;
-import shop.redis.repository.entity.MongoDBClasses.ClientTypeMdb;
+import shop.redis.repository.mongoEntity.ClientMdb;
+import shop.redis.repository.mongoEntity.ClientTypeMdb;
 
 import java.util.ArrayList;
 

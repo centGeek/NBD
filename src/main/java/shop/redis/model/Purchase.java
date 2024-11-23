@@ -2,6 +2,7 @@ package shop.redis.model;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
+@NoArgsConstructor
 public class Purchase {
 
     private UUID id;

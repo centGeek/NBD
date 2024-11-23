@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import shop.redis.model.Product;
-import shop.redis.repository.entity.MongoDBClasses.ProductMdb;
+import shop.redis.repository.mongoEntity.ProductMdb;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

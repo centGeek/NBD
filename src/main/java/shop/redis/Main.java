@@ -1,3 +1,16 @@
+package shop.redis;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.SneakyThrows;
+import shop.redis.model.Address;
+import shop.redis.model.Client;
+import shop.redis.model.IndividualClient;
+import shop.redis.repository.redis.ClientRedisRepository;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
 //package shop.orm;
 //
 //
@@ -168,3 +181,12 @@
 //        }
 //    }
 //}
+public class Main {
+    public static void main(String[] args) {
+        var clientRedisRepository = new ClientRedisRepository();
+        clientRedisRepository.add(new Client(new Address("1", "1", "1", "1", "1"),
+                new IndividualClient("3232", "maciek.klient@buziaczek.pl", LocalDate.of(2003, 2, 1))));
+        System.out.println(clientRedisRepository.getClient("3232"));
+
+    }
+}

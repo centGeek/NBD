@@ -1,6 +1,7 @@
 services:
   redis-stack:
     image: redis/redis-stack:latest
+    container_name: redis-stack
     volumes:
       - redis-stack-data:/bitnami/redis/data
     ports:
@@ -8,9 +9,11 @@ services:
       - "6379:6379"
     networks:
       - redisnet
-  volumes:
-    redis-stack-data:
-    driver: local
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   mongo_1:
     build: .
     image: mongocustom:7.0.2
@@ -50,6 +53,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 5
+
   mongo_3:
     build: .
     image: mongocustom:7.0.2
@@ -69,6 +73,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 5
+
   mongoinit:
     build: .
     image: mongocustom:7.0.2
@@ -85,8 +90,8 @@ services:
         condition: service_healthy
     command: >
       mongosh --host mongodb1:27017 --username admin --password adminpassword --authenticationDatabase admin --eval
-      '      
-      rsconf = 
+      '
+      rsconf =
       {
         _id: "replica_set_single",
         version: 1,
@@ -94,12 +99,15 @@ services:
           { _id: 0, host : "mongodb1:27017" },
           { _id: 1, host : "mongodb2:27018" },
           { _id: 2, host : "mongodb3:27019" }
-        ] 
+        ]
       };
       rs.initiate(rsconf);
       '
 
-networks:
-  mongonet: { }
-  redisnet: { }
+volumes:
+  redis-stack-data:
+    driver: local
 
+networks:
+  mongonet: {}
+  redisnet: {}

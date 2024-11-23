@@ -1,7 +1,9 @@
 package shop.redis.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class CompanyClient extends ClientType {
 
     @Getter
