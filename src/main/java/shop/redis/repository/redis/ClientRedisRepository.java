@@ -1,6 +1,8 @@
 package shop.redis.repository.redis;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import redis.clients.jedis.JedisPool;
 import shop.redis.configuration.JedisPoolConfiguration;
 import shop.redis.model.Address;
@@ -16,15 +18,14 @@ public class ClientRedisRepository {
     }
 
     public void add(Client client) {
-        try (var jedis = jedisPool.getResource()) {
+        try {
             var json = new ObjectMapper()
                     .findAndRegisterModules()
                     .writeValueAsString(client);
             var redisKey = "clientRedis:" + client.getClientType().getPesel();
-            jedis.set(redisKey, json);
-            jedis.disconnect();
-        } catch (Exception ignored) {
-
+            new CacheService().setCache(redisKey, json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -41,11 +42,8 @@ public class ClientRedisRepository {
     }
 
     public void deleteClient(Client client) {
-        try (var jedis = jedisPool.getResource()) {
-            String redisKey = "client:" + client.getClientType().getPesel();
-            jedis.disconnect();
-            jedis.del(redisKey);
-        }
+        String redisKey = "client:" + client.getClientType().getPesel();
+        new CacheService().invalidateCache(redisKey);
     }
 
     public void clientUpdateAddress(Client client, Address address) {

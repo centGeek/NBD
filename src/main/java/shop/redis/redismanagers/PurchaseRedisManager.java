@@ -1,20 +1,24 @@
-package shop.redis.menagers;
+package shop.redis.redismanagers;
 
 import shop.redis.model.Client;
 import shop.redis.model.Purchase;
 import shop.redis.repository.mongoDb.PurchaseMongoRepository;
+import shop.redis.repository.redis.PurchaseRedisRepository;
 
 import java.util.List;
 
-public class PurchaseManager implements AutoCloseable {
+public class PurchaseRedisManager implements AutoCloseable {
     private final PurchaseMongoRepository purchaseMongoRepository;
+    private final PurchaseRedisRepository purchaseRedisRepository;
 
-    public PurchaseManager() {
+    public PurchaseRedisManager() {
         this.purchaseMongoRepository = new PurchaseMongoRepository();
+        this.purchaseRedisRepository = new PurchaseRedisRepository();
     }
 
-    public PurchaseManager(String nameOfCollection) {
+    public PurchaseRedisManager(String nameOfCollection) {
         this.purchaseMongoRepository = new PurchaseMongoRepository(nameOfCollection);
+        this.purchaseRedisRepository = new PurchaseRedisRepository();
     }
 
     public List<Purchase> getAllPurchasesByClient(Client client) {
@@ -22,6 +26,7 @@ public class PurchaseManager implements AutoCloseable {
     }
 
     public void makeAPurchase(Purchase purchase) {
+        purchaseRedisRepository.addPurchase(purchase);
         purchaseMongoRepository.makeAPurchase(purchase);
     }
 

@@ -2,9 +2,7 @@ package shop.redis;
 
 import shop.redis.menagers.ClientRegisterManager;
 import shop.redis.model.*;
-import shop.redis.repository.redis.ClientRedisRepository;
-
-import java.time.LocalDate;
+import shop.redis.redismanagers.ClientRedisRegisterManager;
 
 //package shop.orm;
 //
@@ -179,9 +177,9 @@ import java.time.LocalDate;
 public class Main {
     public static void main(String[] args) {
 
-        ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
+        var clientRegisterManager = new ClientRedisRegisterManager();
         Address address = new Address("Lodz", "Poland", "06-323", "Lodzka", "32");
-        ClientType clientType = new CompanyClient("03232132911", 323124124324234L, "Politechnika Lodzka");
+        ClientType clientType = new CompanyClient("3231", 323124124324234L, "Politechnika Lodzka");
         var client1 = new Client(address, clientType);
         clientRegisterManager.clientRegister(client1);
 

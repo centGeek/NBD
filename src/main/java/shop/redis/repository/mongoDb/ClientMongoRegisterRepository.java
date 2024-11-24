@@ -29,7 +29,7 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
         this.nameOfCollection = "clients";
     }
 
-    public ClientMongoRegisterRepository(String nameOfCollection, ClientRedisRepository clientRedisRepository) {
+    public ClientMongoRegisterRepository(String nameOfCollection) {
         this.database = AbstractMongoRepository.getDatabase();
         this.nameOfCollection = nameOfCollection;
         var collection = database.getCollection(nameOfCollection);
@@ -42,7 +42,7 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
         try {
             var pesel = client.getClientType().getPesel();
             var clientByPesel = this.getClientByPesel(pesel);
-            if (clientByPesel == null) {
+            if (clientByPesel.isEmpty()) {
                 MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
                 ClientMdb clientMdb = new ClientMdb(client);
                 collection.insertOne(clientMdb);
@@ -101,5 +101,10 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
         ArrayList<ClientMdb> arrayList = collection.find(filter).into(new ArrayList<>());
 
         return arrayList;
+    }
+
+    public void deleteAll() {
+        var collection = database.getCollection(nameOfCollection, ClientMdb.class);
+        collection.deleteMany(Filters.empty());
     }
 }

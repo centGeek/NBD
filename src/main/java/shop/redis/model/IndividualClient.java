@@ -1,6 +1,7 @@
 package shop.redis.model;
 
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class IndividualClient extends ClientType {
     @Getter
     private String email;

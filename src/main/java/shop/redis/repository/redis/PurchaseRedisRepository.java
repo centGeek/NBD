@@ -16,12 +16,10 @@ public class PurchaseRedisRepository {
 
     public void addPurchase(Purchase purchase) {
         objectMapper.findAndRegisterModules();
-        try (var jedis = jedisPool.getResource()) {
+        try {
             var json = objectMapper.writeValueAsString(purchase);
-            var key = "clientRedis:" + purchase.getId();
-            jedis.set(key, json);
-            jedis.expire(key, 3600);
-            jedis.disconnect();
+            var redisKey = "clientRedis:" + purchase.getId();
+            new CacheService().setCache(redisKey, json);
         } catch (Exception ignored) {
 
         }

@@ -24,7 +24,7 @@ public class ClientRegisterManagerTest {
     private final String testClientCollection = "testClients";
 
     @Test
-    public void addingTestCorrectly() {
+    public void thatMongoClientRegisterWorksCorrectly() {
         try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
             Client client = TestData.getClient1();
             clientRegisterManager.clientRegister(client);

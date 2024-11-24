@@ -1,58 +1,41 @@
 package shop.redis.menagers;
 
+
 import shop.redis.model.Address;
 import shop.redis.model.Client;
 import shop.redis.repository.mongoDb.ClientMongoRegisterRepository;
-import shop.redis.repository.mongoEntity.ClientMdb;
-import shop.redis.repository.redis.ClientRedisRepository;
 
 import java.util.List;
 
 public class ClientRegisterManager implements AutoCloseable {
-    private final ClientMongoRegisterRepository clientMongoRegisterRepository;
-
-    private final ClientRedisRepository clientRedisRepository;
+    private final ClientMongoRegisterRepository clientRegisterRepository;
 
     public ClientRegisterManager() {
-        this.clientRedisRepository = new ClientRedisRepository();
-        this.clientMongoRegisterRepository = new ClientMongoRegisterRepository();
-
+        this.clientRegisterRepository = new ClientMongoRegisterRepository();
     }
 
     public ClientRegisterManager(String nameOfCollection) {
-        this.clientRedisRepository = new ClientRedisRepository();
-        this.clientMongoRegisterRepository = new ClientMongoRegisterRepository(nameOfCollection, clientRedisRepository);
+        this.clientRegisterRepository = new ClientMongoRegisterRepository(nameOfCollection);
     }
 
     public void clientRegister(Client client) {
-        clientMongoRegisterRepository.clientRegister(client);
-//        clientRedisRepository.add(client);
+        clientRegisterRepository.clientRegister(client);
     }
 
     public void clientDelete(Client client) {
-        clientMongoRegisterRepository.clientDelete(client);
-        clientRedisRepository.deleteClient(client);
+        clientRegisterRepository.clientDelete(client);
     }
 
     public List<Client> getAllClients() {
-        return clientMongoRegisterRepository.getAllClients();
-    }
-
-    public Client getClientByPesel(String pesel) {
-        return clientRedisRepository.getClientByPesel(pesel)
-                .orElseGet(() ->
-                        ClientMdb.ClientMdbToClient(
-                                clientMongoRegisterRepository.getClientByPesel(pesel).getFirst()));
+        return clientRegisterRepository.getAllClients();
     }
 
     public void clientUpdateAddress(Client client, Address address) {
-        clientMongoRegisterRepository.clientUpdateAddress(client, address);
-        clientRedisRepository.getClientByPesel(client.getClientType().getPesel())
-                .ifPresent(c -> clientRedisRepository.clientUpdateAddress(client, address));
+        clientRegisterRepository.clientUpdateAddress(client, address);
     }
 
     @Override
     public void close() throws Exception {
-        clientMongoRegisterRepository.close();
+        clientRegisterRepository.close();
     }
 }

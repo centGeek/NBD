@@ -1,6 +1,7 @@
 package shop.redis.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.redis.model.Address;
 import shop.redis.model.ClientType;
@@ -8,7 +9,8 @@ import shop.redis.model.ClientType;
 import java.util.Objects;
 import java.util.UUID;
 
-
+@NoArgsConstructor
+@Setter
 public class Client {
 
     public Client(Address address, ClientType clientType) {
@@ -47,12 +49,17 @@ public class Client {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Client client = (Client) o;
-        return Objects.equals(getId(), client.getId()) && Objects.equals(getAddress(), client.getAddress()) && Objects.equals(getClientType(), client.getClientType());
+
+        if (!address.equals(client.address)) return false;
+        return clientType.equals(client.clientType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getAddress(), getClientType());
+        int result = address.hashCode();
+        result = 31 * result + clientType.hashCode();
+        return result;
     }
 }
