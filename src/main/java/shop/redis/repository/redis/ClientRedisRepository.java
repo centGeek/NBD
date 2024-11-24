@@ -3,6 +3,7 @@ package shop.redis.repository.redis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import redis.clients.jedis.JedisPool;
 import shop.redis.configuration.JedisPoolConfiguration;
+import shop.redis.model.Address;
 import shop.redis.model.Client;
 
 import java.util.Optional;
@@ -15,11 +16,11 @@ public class ClientRedisRepository {
     }
 
     public void add(Client client) {
-        var objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
         try (var jedis = jedisPool.getResource()) {
-            String json = objectMapper.writeValueAsString(client);
-            String redisKey = "clientRedis:" + client.getClientType().getPesel();
+            var json = new ObjectMapper()
+                    .findAndRegisterModules()
+                    .writeValueAsString(client);
+            var redisKey = "clientRedis:" + client.getClientType().getPesel();
             jedis.set(redisKey, json);
             jedis.disconnect();
         } catch (Exception ignored) {
@@ -27,7 +28,7 @@ public class ClientRedisRepository {
         }
     }
 
-    public Optional<Client> getClient(String pesel) {
+    public Optional<Client> getClientByPesel(String pesel) {
         var objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         try (var jedis = jedisPool.getResource()) {
@@ -46,4 +47,18 @@ public class ClientRedisRepository {
             jedis.del(redisKey);
         }
     }
+
+    public void clientUpdateAddress(Client client, Address address) {
+        client.setAddress(address);
+        var objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        try (var jedis = jedisPool.getResource()) {
+            var redisKey = "clientRedis:" + client.getClientType().getPesel();
+            var clientJson = objectMapper.writeValueAsString(client);
+            jedis.set(redisKey, clientJson);
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating client in Redis", e);
+        }
+    }
+
 }

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class TestData {
     public static Client getClient1(){
         Address address = new Address("Lodz", "Poland", "06-323", "Lodzka", "32");
-        ClientType clientType = new CompanyClient("03232132911", 323124124324234L, "Politechnika Lodzka");
+        ClientType clientType = new CompanyClient("0323212321323213132911", 323124124324234L, "Politechnika Lodzka");
         return new Client(address, clientType);
     }
     public static Client getClient2(){

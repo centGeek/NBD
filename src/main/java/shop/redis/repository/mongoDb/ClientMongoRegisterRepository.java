@@ -42,7 +42,7 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
         try {
             var pesel = client.getClientType().getPesel();
             var clientByPesel = this.getClientByPesel(pesel);
-            if (clientByPesel.isEmpty()) {
+            if (clientByPesel == null) {
                 MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
                 ClientMdb clientMdb = new ClientMdb(client);
                 collection.insertOne(clientMdb);
@@ -102,6 +102,4 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
 
         return arrayList;
     }
-
-
 }

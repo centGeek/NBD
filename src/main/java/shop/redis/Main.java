@@ -1,15 +1,10 @@
 package shop.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import lombok.SneakyThrows;
-import shop.redis.model.Address;
-import shop.redis.model.Client;
-import shop.redis.model.IndividualClient;
+import shop.redis.menagers.ClientRegisterManager;
+import shop.redis.model.*;
 import shop.redis.repository.redis.ClientRedisRepository;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 //package shop.orm;
 //
@@ -183,10 +178,14 @@ import java.util.UUID;
 //}
 public class Main {
     public static void main(String[] args) {
-        var clientRedisRepository = new ClientRedisRepository();
-        clientRedisRepository.add(new Client(new Address("1", "1", "1", "1", "1"),
-                new IndividualClient("3232", "maciek.klient@buziaczek.pl", LocalDate.of(2003, 2, 1))));
-        System.out.println(clientRedisRepository.getClient("3232"));
+
+        ClientRegisterManager clientRegisterManager = new ClientRegisterManager();
+        Address address = new Address("Lodz", "Poland", "06-323", "Lodzka", "32");
+        ClientType clientType = new CompanyClient("03232132911", 323124124324234L, "Politechnika Lodzka");
+        var client1 = new Client(address, clientType);
+        clientRegisterManager.clientRegister(client1);
+
+        System.out.println(clientRegisterManager.getClientByPesel(clientType.getPesel()));
 
     }
 }

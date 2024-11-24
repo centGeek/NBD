@@ -1,20 +1,20 @@
 package shop.redis.model;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.redis.model.Address;
+import shop.redis.model.ClientType;
 
 import java.util.Objects;
 import java.util.UUID;
 
-@NoArgsConstructor
+
 public class Client {
 
     public Client(Address address, ClientType clientType) {
+        this.id = UUID.randomUUID();
         this.address = address;
         this.clientType = clientType;
-        this.id = UUID.randomUUID();
-
     }
 
     public Client(UUID id, Address address, ClientType clientType) {
@@ -22,6 +22,7 @@ public class Client {
         this.address = address;
         this.clientType = clientType;
     }
+
     @Getter
     private UUID id;
 
@@ -55,4 +56,3 @@ public class Client {
         return Objects.hash(getId(), getAddress(), getClientType());
     }
 }
-
