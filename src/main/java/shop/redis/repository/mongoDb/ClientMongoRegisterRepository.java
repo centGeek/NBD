@@ -12,7 +12,6 @@ import shop.redis.model.Address;
 import shop.redis.model.Client;
 import shop.redis.repository.mongoEntity.AddressMdb;
 import shop.redis.repository.mongoEntity.ClientMdb;
-import shop.redis.repository.redis.ClientRedisRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +37,11 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
     }
 
 
-    public void clientRegister(Client client) {
+    public String clientRegister(Client client) {
+        var pesel = client.getClientType().getPesel();
+        var clientByPesel = this.getClientByPesel(pesel);
+
         try {
-            var pesel = client.getClientType().getPesel();
-            var clientByPesel = this.getClientByPesel(pesel);
             if (clientByPesel.isEmpty()) {
                 MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
                 ClientMdb clientMdb = new ClientMdb(client);
@@ -54,6 +54,8 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
             logger.log(Level.ERROR, "Registering client did not went correctly");
             throw new RuntimeException(e);
         }
+        clientByPesel = this.getClientByPesel(pesel);
+        return clientByPesel.stream().findFirst().get().getEntityId();
     }
 
     public void clientDelete(Client client) {
@@ -61,6 +63,9 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
             MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
             Bson filter = Filters.eq("_id", client.getId().toString());
             collection.findOneAndDelete(filter);
+            Bson secondFilter = Filters.eq("pesel", client.getClientType().getPesel());
+            collection.findOneAndDelete(secondFilter);
+
         } catch (Exception e) {
             logger.log(Level.ERROR, e);
         }

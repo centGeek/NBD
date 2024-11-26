@@ -3,6 +3,7 @@ package shop.redis.repository.redis;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import shop.redis.configuration.JedisPoolConfiguration;
 import shop.redis.model.Address;
@@ -42,7 +43,7 @@ public class ClientRedisRepository {
     }
 
     public void deleteClient(Client client) {
-        String redisKey = "client:" + client.getClientType().getPesel();
+        String redisKey = "clientRedis:" + client.getClientType().getPesel();
         new CacheService().invalidateCache(redisKey);
     }
 

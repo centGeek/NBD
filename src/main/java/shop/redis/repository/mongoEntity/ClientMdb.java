@@ -10,7 +10,6 @@ import java.util.UUID;
 
 public class ClientMdb extends AbstractEntityMdb {
     @BsonCreator
-    @JsonCreator
     public ClientMdb(@BsonProperty("_id") String _id,
                      @BsonProperty("clientType") ClientTypeMdb clientType,
                      @BsonProperty("address") AddressMdb addresMdb
@@ -37,6 +36,7 @@ public class ClientMdb extends AbstractEntityMdb {
     public AddressMdb getAddressMdb() {
         return addressMdb;
     }
+
 
 
     public ClientTypeMdb getClientTypeMdb() {

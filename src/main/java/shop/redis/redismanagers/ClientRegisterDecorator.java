@@ -7,6 +7,7 @@ import shop.redis.repository.mongoEntity.ClientMdb;
 import shop.redis.repository.redis.ClientRedisRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ClientRegisterDecorator implements AutoCloseable {
     private final ClientMongoRegisterRepository clientMongoRegisterRepository;
@@ -25,8 +26,8 @@ public class ClientRegisterDecorator implements AutoCloseable {
     }
 
     public void clientRegister(Client client) {
-        clientMongoRegisterRepository.clientRegister(client);
-        client.setId(null);
+        String id = clientMongoRegisterRepository.clientRegister(client);
+        client.setId(UUID.fromString(id));
         clientRedisRepository.add(client);
     }
 

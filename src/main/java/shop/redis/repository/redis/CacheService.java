@@ -19,6 +19,9 @@ public class CacheService {
         } catch (Exception ignored) {
         }
     }
+    public void flushAll(){
+        jedis.flushAll();
+    }
 
     public void invalidateCache(String redisKey) {
         try {
