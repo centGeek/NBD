@@ -1,8 +1,7 @@
 package shop.redis;
 
-import shop.redis.menagers.ClientRegisterManager;
 import shop.redis.model.*;
-import shop.redis.redismanagers.ClientRedisRegisterManager;
+import shop.redis.redismanagers.ClientRegisterDecorator;
 
 //package shop.orm;
 //
@@ -177,7 +176,7 @@ import shop.redis.redismanagers.ClientRedisRegisterManager;
 public class Main {
     public static void main(String[] args) {
 
-        var clientRegisterManager = new ClientRedisRegisterManager();
+        var clientRegisterManager = new ClientRegisterDecorator();
         Address address = new Address("Lodz", "Poland", "06-323", "Lodzka", "32");
         ClientType clientType = new CompanyClient("3231", 323124124324234L, "Politechnika Lodzka");
         var client1 = new Client(address, clientType);

@@ -1,6 +1,7 @@
 package shop.redis.repository.mongoEntity;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 

@@ -1,5 +1,6 @@
 package shop.redis.repository.mongoEntity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import shop.redis.model.*;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 public class ClientMdb extends AbstractEntityMdb {
     @BsonCreator
+    @JsonCreator
     public ClientMdb(@BsonProperty("_id") String _id,
                      @BsonProperty("clientType") ClientTypeMdb clientType,
                      @BsonProperty("address") AddressMdb addresMdb
@@ -30,6 +32,7 @@ public class ClientMdb extends AbstractEntityMdb {
 
     @BsonProperty("address")
     private AddressMdb addressMdb;
+
 
     public AddressMdb getAddressMdb() {
         return addressMdb;

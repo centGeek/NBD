@@ -8,18 +8,18 @@ import shop.redis.repository.redis.ClientRedisRepository;
 
 import java.util.List;
 
-public class ClientRedisRegisterManager implements AutoCloseable {
+public class ClientRegisterDecorator implements AutoCloseable {
     private final ClientMongoRegisterRepository clientMongoRegisterRepository;
 
     private final ClientRedisRepository clientRedisRepository;
 
-    public ClientRedisRegisterManager() {
+    public ClientRegisterDecorator() {
         this.clientRedisRepository = new ClientRedisRepository();
         this.clientMongoRegisterRepository = new ClientMongoRegisterRepository();
 
     }
 
-    public ClientRedisRegisterManager(String nameOfCollection) {
+    public ClientRegisterDecorator(String nameOfCollection) {
         this.clientRedisRepository = new ClientRedisRepository();
         this.clientMongoRegisterRepository = new ClientMongoRegisterRepository(nameOfCollection);
     }

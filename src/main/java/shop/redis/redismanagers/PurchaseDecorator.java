@@ -7,16 +7,16 @@ import shop.redis.repository.redis.PurchaseRedisRepository;
 
 import java.util.List;
 
-public class PurchaseRedisManager implements AutoCloseable {
+public class PurchaseDecorator implements AutoCloseable {
     private final PurchaseMongoRepository purchaseMongoRepository;
     private final PurchaseRedisRepository purchaseRedisRepository;
 
-    public PurchaseRedisManager() {
+    public PurchaseDecorator() {
         this.purchaseMongoRepository = new PurchaseMongoRepository();
         this.purchaseRedisRepository = new PurchaseRedisRepository();
     }
 
-    public PurchaseRedisManager(String nameOfCollection) {
+    public PurchaseDecorator(String nameOfCollection) {
         this.purchaseMongoRepository = new PurchaseMongoRepository(nameOfCollection);
         this.purchaseRedisRepository = new PurchaseRedisRepository();
     }

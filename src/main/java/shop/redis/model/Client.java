@@ -3,12 +3,10 @@ package shop.redis.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.redis.model.Address;
-import shop.redis.model.ClientType;
 
-import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 @NoArgsConstructor
 @Setter
 public class Client {
@@ -25,14 +23,11 @@ public class Client {
         this.clientType = clientType;
     }
 
-    @Getter
     private UUID id;
 
     @Setter
-    @Getter
     private Address address;
 
-    @Getter
     private ClientType clientType;
 
     @Override
