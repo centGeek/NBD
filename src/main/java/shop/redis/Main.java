@@ -1,7 +1,7 @@
 package shop.redis;
 
 import shop.redis.model.*;
-import shop.redis.redismanagers.ClientRegisterDecorator;
+import shop.redis.decorators.ClientRegisterDecorator;
 
 //package shop.orm;
 //

@@ -1,4 +1,4 @@
-package shop.redis.redismanagers;
+package shop.redis.decorators;
 
 import shop.redis.model.Address;
 import shop.redis.model.Client;

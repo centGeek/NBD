@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import shop.redis.model.Client;
-import shop.redis.redismanagers.ClientRegisterDecorator;
+import shop.redis.decorators.ClientRegisterDecorator;
 import shop.redis.repository.mongoDb.ClientMongoRegisterRepository;
 import shop.redis.repository.redis.CacheService;
 
