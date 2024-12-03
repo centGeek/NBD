@@ -6,6 +6,8 @@ import shop.redis.repository.mongoDb.PurchaseMongoRepository;
 import shop.redis.repository.redis.PurchaseRedisRepository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class PurchaseDecorator implements AutoCloseable {
     private final PurchaseMongoRepository purchaseMongoRepository;
@@ -23,6 +25,10 @@ public class PurchaseDecorator implements AutoCloseable {
 
     public List<Purchase> getAllPurchasesByClient(Client client) {
         return purchaseMongoRepository.getAllPurchasesByClient(client);
+    }
+    public Optional<Purchase> getPurchaseById(UUID uuid){
+        return Optional.ofNullable(purchaseRedisRepository.getPurchaseById(uuid)
+                .orElseGet(() -> purchaseMongoRepository.getPurchaseById(uuid)));
     }
 
     public void makeAPurchase(Purchase purchase) {

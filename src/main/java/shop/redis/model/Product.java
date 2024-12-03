@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Setter
 @Getter
+@EqualsAndHashCode
 public class Product {
     @Setter(AccessLevel.NONE)
     private UUID id;
@@ -38,18 +39,7 @@ public class Product {
         this.id = UUID.randomUUID();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return isProductBought() == product.isProductBought() && Objects.equals(getId(), product.getId()) && Objects.equals(getProductName(), product.getProductName()) && Objects.equals(getPrice(), product.getPrice()) && Objects.equals(getPurchase(), product.getPurchase());
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getProductName(), getPrice(), isProductBought(), getPurchase());
-    }
 
     @Override
     public String toString() {

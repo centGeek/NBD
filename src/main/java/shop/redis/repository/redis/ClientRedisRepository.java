@@ -2,20 +2,21 @@ package shop.redis.repository.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import shop.redis.configuration.JedisPoolConfiguration;
+import redis.clients.jedis.JedisPoolConfig;
+import shop.redis.configuration.Configuration;
 import shop.redis.model.Address;
 import shop.redis.model.Client;
 
 import java.util.Optional;
 
 public class ClientRedisRepository {
+    private final CacheService cacheService;
     private final JedisPool jedisPool;
 
     public ClientRedisRepository() {
-        this.jedisPool = JedisPoolConfiguration.getPoolConfig();
+        this.cacheService = new CacheService();
+        this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getProperty("redisUrl"));
     }
 
     public void add(Client client) {
@@ -24,7 +25,7 @@ public class ClientRedisRepository {
                     .findAndRegisterModules()
                     .writeValueAsString(client);
             var redisKey = "clientRedis:" + client.getClientType().getPesel();
-            new CacheService().setCache(redisKey, json);
+            cacheService.setCache(redisKey, json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -37,9 +38,10 @@ public class ClientRedisRepository {
             var redisKey = "clientRedis:" + pesel;
             var json = jedis.get(redisKey);
             return Optional.of(objectMapper.readValue(json, Client.class));
-        } catch (Exception e) {
-            throw new RuntimeException("Error retrieving client from Redis", e);
+        } catch (Exception ignored) {
+
         }
+        return Optional.empty();
     }
 
     public void deleteClient(Client client) {

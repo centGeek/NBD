@@ -10,6 +10,7 @@ import com.mongodb.client.result.UpdateResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import shop.redis.model.Client;
 import shop.redis.model.Product;
 import shop.redis.model.Purchase;
@@ -19,6 +20,7 @@ import shop.redis.repository.mongoEntity.PurchaseMdb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PurchaseMongoRepository extends AbstractMongoRepository {
 
@@ -58,7 +60,20 @@ public class PurchaseMongoRepository extends AbstractMongoRepository {
 
         return purchases;
     }
+    public Purchase getPurchaseById(UUID purchaseId) {
 
+        Bson filter = Filters.eq("_id", purchaseId.toString());
+
+        PurchaseMdb purchaseMdb = database.getCollection(collectionPurchases, PurchaseMdb.class)
+                .find(filter)
+                .first();
+
+        if (purchaseMdb != null) {
+            return PurchaseMdb.purchaseMdbToPurchase(purchaseMdb);
+        } else {
+            return null;
+        }
+    }
     public void buyAProduct(Purchase purchase, Product product) {
         product.setPurchase(purchase);
         product.setProductBought(true);

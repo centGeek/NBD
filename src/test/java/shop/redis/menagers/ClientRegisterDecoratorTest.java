@@ -9,6 +9,7 @@ import shop.redis.repository.mongoDb.ClientMongoRegisterRepository;
 import shop.redis.repository.redis.CacheService;
 
 public class ClientRegisterDecoratorTest {
+    private final ClientRegisterDecorator clientRegisterDecorator = new ClientRegisterDecorator();
 
     @BeforeEach
     public void deleteFromDatabase(){
@@ -20,7 +21,6 @@ public class ClientRegisterDecoratorTest {
     }
     @Test
     public void thatClientRegisteringWentCorrectly(){
-        var clientRegisterDecorator = new ClientRegisterDecorator();
         var client = TestData.getClient1();
 
         clientRegisterDecorator.clientRegister(client);
@@ -30,7 +30,6 @@ public class ClientRegisterDecoratorTest {
     }
     @Test
     public void thatClientReadingThrowsException(){
-        var clientRegisterDecorator = new ClientRegisterDecorator();
         var client = TestData.getClient1();
 
         clientRegisterDecorator.clientRegister(client);
@@ -41,7 +40,7 @@ public class ClientRegisterDecoratorTest {
     }
     @Test
     public void thatClientDeletingAndReadingWentCorrectly(){
-        var clientRegisterDecorator = new ClientRegisterDecorator();
+
         var client1 = TestData.getClient1();
         var client2 = TestData.getClient2();
 
@@ -51,7 +50,19 @@ public class ClientRegisterDecoratorTest {
 
         Client clientByPesel = clientRegisterDecorator
                 .getClientByPesel(client2.getClientType().getPesel());
-
         Assertions.assertEquals(clientByPesel, client2);
+    }
+    @Test
+    public void thatClientAddressUpdateWentCorrectly(){
+        var client2 = TestData.getClient2();
+        clientRegisterDecorator.clientRegister(client2);
+        clientRegisterDecorator.clientUpdateAddress(client2, TestData.getClient3().getAddress());
+
+        var clientByPesel = clientRegisterDecorator
+                .getClientByPesel(client2.getClientType().getPesel());
+
+        client2.setAddress(TestData.getClient3().getAddress());
+
+        Assertions.assertEquals(client2, clientByPesel);
     }
 }

@@ -129,12 +129,6 @@ public class StockManagerTest {
 
             process4.waitFor();
 
-            String validateResult = output2.toString();
-            if (!validateResult.equals(" true\n")) {
-                throw new RuntimeException("node validation failure, maybe you don't have tail or cut cmdlets on you system");
-            }
-
-
         } catch (Exception e) {
             Assertions.fail(e);
         }

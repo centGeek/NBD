@@ -4,17 +4,11 @@ services:
     container_name: redis-stack
     volumes:
       - redis-stack-data:/bitnami/redis/data
-    command: ["redis-server", "--save", "", "--appendonly", "no"]
     ports:
       - "8001:8001"
       - "6379:6379"
     networks:
       - redisnet
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
   mongo_1:
     build: .
     image: mongocustom:7.0.2

@@ -4,6 +4,7 @@ import shop.redis.model.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class TestData {
     public static Client getClient1(){
@@ -24,5 +25,8 @@ public class TestData {
     }
     public static Product getProduct2(){
         return new Product("Grzeski", BigDecimal.valueOf(4));
+    }
+    public static Purchase getPurchase(){
+        return new Purchase(getClient2(), List.of(getProduct1(), getProduct2()));
     }
 }
