@@ -15,11 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class PerformanceTest {
 
     private final ClientRepositoryDecorator clientRepositoryDecorator = new ClientRepositoryDecorator();
-    private final PurchaseRepositoryDecorator purchaseRepositoryDecorator = new PurchaseRepositoryDecorator();
-    private final PurchaseRedisRepository purchaseRedisRepository = new PurchaseRedisRepository();
     private final ClientRedisRepository clientRedisRepository = new ClientRedisRepository();
     private final ClientManager clientManager = new ClientManager();
-    private final PurchaseManager purchaseManager = new PurchaseManager();
 
     @Setup
     public void setUp() {
@@ -34,34 +31,8 @@ public class PerformanceTest {
                 clientRepositoryDecorator.clientRegister(client);
             }
         });
-
-        var purchases = List.of(
-                PerformanceFixtures.getPurchase1(),
-                PerformanceFixtures.getPurchase2(),
-                PerformanceFixtures.getPurchase3());
-        purchases.forEach(purchaseRepositoryDecorator::makeAPurchase);
     }
 
-
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void purchaseRedisTest() {
-        purchaseRedisRepository.getAllPurchasesByClient(PerformanceFixtures.getClient3());
-    }
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void purchaseMongoTest() {
-        purchaseManager.getAllPurchasesByClient(PerformanceFixtures.getClient3());
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void purchaseMongoAndRedisTest() {
-        purchaseRepositoryDecorator.getAllPurchasesByClient(PerformanceFixtures.getClient3());
-    }
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)

@@ -1,8 +1,8 @@
 package shop.redis.repository.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import shop.redis.configuration.Configuration;
@@ -10,10 +10,8 @@ import shop.redis.model.Client;
 import shop.redis.model.Product;
 import shop.redis.model.Purchase;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PurchaseRedisRepository {
     private final JedisPool jedisPool;
@@ -22,6 +20,7 @@ public class PurchaseRedisRepository {
     public PurchaseRedisRepository() {
         this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getProperty("redisUrl"));
         this.objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     public void addPurchase(Purchase purchase) {
@@ -60,21 +59,21 @@ public class PurchaseRedisRepository {
     }
 
     public List<Purchase> getAllPurchasesByClient(Client client) {
-        List<Purchase> purchases = new ArrayList<>();
         try (var jedis = jedisPool.getResource()) {
-            var keys = jedis.keys("purchaseRedis:*");
-            for (String key : keys) {
-                var json = jedis.get(key);
-                if (json != null) {
-                    var purchase = objectMapper.readValue(json, Purchase.class);
-                    if (purchase.getClient().getId().equals(client.getId())) {
-                        purchases.add(purchase);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return jedis.keys("purchaseRedis:*").stream()
+                    .map(jedis::get)
+                    .filter(Objects::nonNull)
+                    .map(this::parseJson)
+                    .filter(purchase -> purchase.getClient().getId().equals(client.getId()))
+                    .collect(Collectors.toList());
         }
-        return purchases;
+    }
+
+    private Purchase parseJson(String json) {
+        try {
+            return objectMapper.readValue(json, Purchase.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

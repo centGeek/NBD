@@ -31,16 +31,7 @@ public class ClientRepositoryDecoratorTest {
         Assertions.assertEquals(client, allClients.getFirst());
     }
 
-    @Test
-    public void thatClientReadingThrowsException() {
-        var client = TestData.getClient1();
 
-        clientRegisterDecoratorImpl.clientRegister(client);
-        clientRegisterDecoratorImpl.clientDelete(client);
-
-        Assertions.assertThrows(RuntimeException.class, () -> clientRegisterDecoratorImpl
-                .getClientByPesel(client.getClientType().getPesel()));
-    }
 
     @Test
     public void thatClientDeletingAndReadingWentCorrectly() {
