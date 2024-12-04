@@ -9,24 +9,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PurchaseDecorator implements AutoCloseable {
+public class PurchaseRepositoryDecorator implements IPurchaseRepository, AutoCloseable {
     private final PurchaseMongoRepository purchaseMongoRepository;
     private final PurchaseRedisRepository purchaseRedisRepository;
 
-    public PurchaseDecorator() {
+    public PurchaseRepositoryDecorator() {
         this.purchaseMongoRepository = new PurchaseMongoRepository();
         this.purchaseRedisRepository = new PurchaseRedisRepository();
     }
 
-    public PurchaseDecorator(String nameOfCollection) {
+    public PurchaseRepositoryDecorator(String nameOfCollection) {
         this.purchaseMongoRepository = new PurchaseMongoRepository(nameOfCollection);
         this.purchaseRedisRepository = new PurchaseRedisRepository();
     }
 
     public List<Purchase> getAllPurchasesByClient(Client client) {
-        return purchaseMongoRepository.getAllPurchasesByClient(client);
+        var allPurchasesByClient = purchaseRedisRepository.getAllPurchasesByClient(client);
+        if (allPurchasesByClient.isEmpty()) {
+            return purchaseMongoRepository.getAllPurchasesByClient(client);
+        }
+        return allPurchasesByClient;
     }
-    public Optional<Purchase> getPurchaseById(UUID uuid){
+
+    public Optional<Purchase> getPurchaseById(UUID uuid) {
         return Optional.ofNullable(purchaseRedisRepository.getPurchaseById(uuid)
                 .orElseGet(() -> purchaseMongoRepository.getPurchaseById(uuid)));
     }
@@ -37,11 +42,8 @@ public class PurchaseDecorator implements AutoCloseable {
     }
 
 
-    public void changeClientForPurchase(Purchase purchase, Client client) {
-        this.purchaseMongoRepository.changeClientForPurchase(purchase, client);
-    }
-
     public void deletePurchase(Purchase purchase) {
+        this.purchaseRedisRepository.deletePurchase(purchase);
         this.purchaseMongoRepository.deletePurchase(purchase);
     }
 

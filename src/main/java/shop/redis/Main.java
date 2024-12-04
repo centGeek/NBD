@@ -1,7 +1,7 @@
 package shop.redis;
 
 import shop.redis.model.*;
-import shop.redis.decorators.ClientRegisterDecorator;
+import shop.redis.decorators.ClientRepositoryDecorator;
 
 //package shop.orm;
 //
@@ -176,7 +176,7 @@ import shop.redis.decorators.ClientRegisterDecorator;
 public class Main {
     public static void main(String[] args) {
 
-        var clientRegisterManager = new ClientRegisterDecorator();
+        var clientRegisterManager = new ClientRepositoryDecorator();
         Address address = new Address("Lodz", "Poland", "06-323", "Lodzka", "32");
         ClientType clientType = new CompanyClient("3231", 323124124324234L, "Politechnika Lodzka");
         var client1 = new Client(address, clientType);

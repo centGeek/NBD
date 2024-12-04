@@ -1,14 +1,21 @@
 package shop.redis.repository.redis;
 
+import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.utility.DockerImageName;
 import shop.redis.menagers.TestData;
-import shop.redis.model.Address;
 import shop.redis.model.Client;
 
 import java.util.Optional;
 
 class ClientRedisRepositoryTest {
+    @BeforeAll
+    public static void setupContainer(){
+        var redisContainer = new RedisContainer(DockerImageName.parse("redis:6.2.6"));
+        redisContainer.start();
+    }
     @Test
     public void thatClientRegisterAndGetWentCorrectly(){
         var ClientRegisterRepository = new ClientRedisRepository();

@@ -10,7 +10,7 @@ public class CacheService {
     private final JedisPool jedisPool;
 
     public CacheService() {
-        this.jedisPool =  new JedisPool(new JedisPoolConfig(), new Configuration().getProperty("redisUrl"));
+        this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getProperty("redisUrl"));
     }
 
     public void setCache(String redisKey, String json) {
