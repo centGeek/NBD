@@ -24,7 +24,7 @@ public class PurchaseManagerTest {
     @Test
     public void purchaseWentCorrectly() {
         Client client = TestData.getClient1();
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager("testClients");
+        try (ClientManager clientRegisterManager = new ClientManager("testClients");
              StockManager stockManager = new StockManager("testStock");
              PurchaseManager purchaseManager = new PurchaseManager("testPurchase")
         ) {
@@ -56,7 +56,7 @@ public class PurchaseManagerTest {
         Client client1 = TestData.getClient1();
         Client client2 = TestData.getClient2();
 
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager("testClients");
+        try (ClientManager clientRegisterManager = new ClientManager("testClients");
              StockManager stockManager = new StockManager("testStock");
              PurchaseManager purchaseManager = new PurchaseManager("testPurchase")
         ) {
@@ -82,9 +82,9 @@ public class PurchaseManagerTest {
     public void changeClientAndDeleteTest() {
         Client client1 = TestData.getClient1();
         Client client2 = TestData.getClient2();
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager("testClients");
+        try (ClientManager clientRegisterManager = new ClientManager("testClients");
              StockManager stockManager = new StockManager("testStock");
-            PurchaseManager purchaseManager = new PurchaseManager("testPurchase")
+             PurchaseManager purchaseManager = new PurchaseManager("testPurchase")
         ) {
 
             clientRegisterManager.clientRegister(client1);

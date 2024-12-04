@@ -17,6 +17,7 @@ public class ClientRedisRepository {
     public ClientRedisRepository() {
         this.cacheService = new CacheService();
         this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getProperty("redisUrl"));
+//        this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getPropertyHardcoded());
     }
 
     public void add(Client client) {

@@ -19,4 +19,7 @@ public class Configuration {
     {
         return this.configFile.getProperty(key);
     }
+    public String getPropertyHardcoded(){
+        return "http://localhost:6379";
+    }
 }

@@ -42,7 +42,7 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
         var clientByPesel = this.getClientByPesel(pesel);
 
         try {
-            if (clientByPesel.isEmpty()) {
+            if (clientByPesel == null) {
                 MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
                 ClientMdb clientMdb = new ClientMdb(client);
                 collection.insertOne(clientMdb);
@@ -55,7 +55,7 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
             throw new RuntimeException(e);
         }
         clientByPesel = this.getClientByPesel(pesel);
-        return clientByPesel.stream().findFirst().get().getEntityId();
+        return clientByPesel.getEntityId();
     }
 
     public void clientDelete(Client client) {
@@ -99,13 +99,16 @@ public class ClientMongoRegisterRepository extends AbstractMongoRepository {
         return clients;
     }
 
-    public List<ClientMdb> getClientByPesel(String pesel) {
+    public ClientMdb getClientByPesel(String pesel) {
 
         MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
         Bson filter = Filters.eq("clientType.pesel", pesel);
         ArrayList<ClientMdb> arrayList = collection.find(filter).into(new ArrayList<>());
-
-        return arrayList;
+        if (arrayList.isEmpty()) {
+            return null;
+        } else {
+            return arrayList.getFirst();
+        }
     }
 
     public void deleteAll() {

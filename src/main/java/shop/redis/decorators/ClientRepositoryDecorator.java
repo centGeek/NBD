@@ -41,10 +41,15 @@ public class ClientRepositoryDecorator implements IClientRepository, AutoCloseab
     }
 
     public Client getClientByPesel(String pesel) {
-        return clientRedisRepository.getClientByPesel(pesel)
-                .orElseGet(() ->
-                        ClientMdb.ClientMdbToClient(
-                                clientMongoRegisterRepository.getClientByPesel(pesel).getFirst()));
+        var client = clientRedisRepository.getClientByPesel(pesel);
+        if (client.isPresent()) {
+            return client.get();
+        }
+        var clientMdb = clientMongoRegisterRepository.getClientByPesel(pesel);
+        if (clientMdb != null) {
+            return ClientMdb.ClientMdbToClient(clientMdb);
+        }
+        return null;
     }
 
     public void clientUpdateAddress(Client client, Address address) {
@@ -58,4 +63,8 @@ public class ClientRepositoryDecorator implements IClientRepository, AutoCloseab
         clientMongoRegisterRepository.close();
     }
 
+    public boolean isClientRegistered(Client client) {
+        Client clientByPesel = getClientByPesel(client.getClientType().getPesel());
+        return clientByPesel != null;
+    }
 }

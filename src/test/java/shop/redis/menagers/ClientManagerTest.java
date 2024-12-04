@@ -14,7 +14,7 @@ import shop.redis.repository.mongoEntity.ClientTypeMdb;
 
 import java.util.ArrayList;
 
-public class ClientRegisterManagerTest {
+public class ClientManagerTest {
 
     @BeforeAll
     public static void setUp() {
@@ -25,20 +25,20 @@ public class ClientRegisterManagerTest {
 
     @Test
     public void thatMongoClientRegisterWorksCorrectly() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
+        try (ClientManager clientManager = new ClientManager(testClientCollection)) {
             Client client = TestData.getClient1();
-            clientRegisterManager.clientRegister(client);
-            Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
+            clientManager.clientRegister(client);
+            Assertions.assertEquals(1, clientManager.getAllClients().size());
 
-            Assertions.assertThrows(RuntimeException.class, () -> clientRegisterManager.clientRegister(client));
+            Assertions.assertThrows(RuntimeException.class, () -> clientManager.clientRegister(client));
 
-            Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
+            Assertions.assertEquals(1, clientManager.getAllClients().size());
 
             Client client2 = TestData.getClient3();
-            clientRegisterManager.clientRegister(client2);
+            clientManager.clientRegister(client2);
             //System.out.println(clientRegisterManager.getAllClients());
 
-            Assertions.assertEquals(2, clientRegisterManager.getAllClients().size());
+            Assertions.assertEquals(2, clientManager.getAllClients().size());
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
@@ -119,22 +119,22 @@ public class ClientRegisterManagerTest {
 
     @Test
     public void clientDeletingSuccessFully() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
-            Assertions.assertEquals(0, clientRegisterManager.getAllClients().size());
+        try (ClientManager clientManager = new ClientManager(testClientCollection)) {
+            Assertions.assertEquals(0, clientManager.getAllClients().size());
 
             Client client1 = TestData.getClient1();
             Client client2 = TestData.getClient2();
 
-            clientRegisterManager.clientRegister(client1);
-            clientRegisterManager.clientRegister(client2);
+            clientManager.clientRegister(client1);
+            clientManager.clientRegister(client2);
 
             Assertions.assertEquals(2,
-                    clientRegisterManager.getAllClients().size());
+                    clientManager.getAllClients().size());
 
-            clientRegisterManager.clientDelete(clientRegisterManager.getAllClients().getFirst());
+            clientManager.clientDelete(clientManager.getAllClients().getFirst());
 
             Assertions.assertEquals(1,
-                    clientRegisterManager.getAllClients().size());
+                    clientManager.getAllClients().size());
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
@@ -142,16 +142,16 @@ public class ClientRegisterManagerTest {
 
     @Test
     public void clientUpdateAddress() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
+        try (ClientManager clientManager = new ClientManager(testClientCollection)) {
             Client client = TestData.getClient1();
-            clientRegisterManager.clientRegister(client);
+            clientManager.clientRegister(client);
             Address address = new Address(
                     "Warszawa", "Ksiestwo Warszawskie",
                     "14-10", "Grunwaldzka", "1");
-            client = clientRegisterManager.getAllClients().getFirst();
-            clientRegisterManager.clientUpdateAddress(client, address);
+            client = clientManager.getAllClients().getFirst();
+            clientManager.clientUpdateAddress(client, address);
             Assertions.assertEquals(address,
-                    clientRegisterManager.getAllClients().getFirst().getAddress());
+                    clientManager.getAllClients().getFirst().getAddress());
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }

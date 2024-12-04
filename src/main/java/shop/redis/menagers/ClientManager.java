@@ -7,19 +7,22 @@ import shop.redis.repository.mongoDb.ClientMongoRegisterRepository;
 
 import java.util.List;
 
-public class ClientRegisterManager implements AutoCloseable {
+public class ClientManager implements AutoCloseable {
     private final ClientMongoRegisterRepository clientRegisterRepository;
 
-    public ClientRegisterManager() {
+    public ClientManager() {
         this.clientRegisterRepository = new ClientMongoRegisterRepository();
     }
 
-    public ClientRegisterManager(String nameOfCollection) {
+    public ClientManager(String nameOfCollection) {
         this.clientRegisterRepository = new ClientMongoRegisterRepository(nameOfCollection);
     }
 
     public void clientRegister(Client client) {
         clientRegisterRepository.clientRegister(client);
+    }
+    public void getClientByPesel(String pesel) {
+        clientRegisterRepository.getClientByPesel(pesel);
     }
 
     public void clientDelete(Client client) {
