@@ -5,6 +5,7 @@ import shop.redis.model.Purchase;
 import shop.redis.repository.mongoDb.PurchaseMongoRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class PurchaseManager implements AutoCloseable {
     private final PurchaseMongoRepository purchaseMongoRepository;
@@ -19,6 +20,9 @@ public class PurchaseManager implements AutoCloseable {
 
     public List<Purchase> getAllPurchasesByClient(Client client) {
         return purchaseMongoRepository.getAllPurchasesByClient(client);
+    }
+    public Purchase getPurchaseById(UUID id){
+        return purchaseMongoRepository.getPurchaseById(id);
     }
 
     public void makeAPurchase(Purchase purchase) {

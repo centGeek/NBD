@@ -21,9 +21,6 @@ public class ClientManager implements AutoCloseable {
     public void clientRegister(Client client) {
         clientRegisterRepository.clientRegister(client);
     }
-    public void getClientByPesel(String pesel) {
-        clientRegisterRepository.getClientByPesel(pesel);
-    }
 
     public void clientDelete(Client client) {
         clientRegisterRepository.clientDelete(client);

@@ -17,6 +17,9 @@ public class PerformanceTest {
     private final ClientRepositoryDecorator clientRepositoryDecorator = new ClientRepositoryDecorator();
     private final ClientRedisRepository clientRedisRepository = new ClientRedisRepository();
     private final ClientManager clientManager = new ClientManager();
+    private final PurchaseManager purchaseManager = new PurchaseManager();
+    private final PurchaseRepositoryDecorator purchaseRepositoryDecorator = new PurchaseRepositoryDecorator();
+    private final PurchaseRedisRepository purchaseRedisRepository = new PurchaseRedisRepository();
 
     @Setup
     public void setUp() {
@@ -31,25 +34,53 @@ public class PerformanceTest {
                 clientRepositoryDecorator.clientRegister(client);
             }
         });
+
+        List.of(
+                PerformanceFixtures.getPurchase2(),
+                PerformanceFixtures.getPurchase3(),
+                PerformanceFixtures.getPurchase1()
+        ).forEach(purchaseManager::makeAPurchase);
+    }
+
+//    @Benchmark
+//    @BenchmarkMode(Mode.AverageTime)
+//    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+//    public void clientRedisTest() {
+//        clientRedisRepository.getClientByPesel(PerformanceFixtures.getClient1().getClientType().getPesel());
+//    }
+//
+//    @Benchmark
+//    @BenchmarkMode(Mode.AverageTime)
+//    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+//    public void clientMongoAndRedisTest() {
+//        clientRepositoryDecorator.getClientByPesel(PerformanceFixtures.getClient1().getClientType().getPesel());
+//    }
+//
+//    @Benchmark
+//    @BenchmarkMode(Mode.AverageTime)
+//    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+//    public void clientMongoTest() {
+//        clientManager.getClientByPesel(PerformanceFixtures.getClient1().getClientType().getPesel());
+//    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void purchaseMongoTest() {
+        purchaseManager.getPurchaseById(PerformanceFixtures.getPurchase2().getId());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void clientRedisTest() {
-        clientRedisRepository.getClientByPesel(PerformanceFixtures.getClient1().getClientType().getPesel());
-    }
-    @Benchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void clientMongoAndRedisTest() {
-        clientRepositoryDecorator.getClientByPesel(PerformanceFixtures.getClient1().getClientType().getPesel());
+    public void purchaseRedisAndMongoTest() {
+        purchaseRepositoryDecorator.getPurchaseById(PerformanceFixtures.getPurchase2().getId());
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    public void clientMongoTest() {
-        clientManager.getClientByPesel(PerformanceFixtures.getClient1().getClientType().getPesel());
+    public void purchaseRedisTest() {
+        purchaseRedisRepository.getPurchaseById(PerformanceFixtures.getPurchase2().getId());
     }
 }
