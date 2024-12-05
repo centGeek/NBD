@@ -37,7 +37,6 @@ public class ClientRedisRepository {
         try (var jedis = jedisPool.getResource()) {
             var redisKey = "clientRedis:" + pesel;
             var json = jedis.get(redisKey);
-            cacheService.setCache(redisKey, json);
             return Optional.of(objectMapper.readValue(json, Client.class));
         } catch (Exception ignored) {
 
@@ -54,13 +53,13 @@ public class ClientRedisRepository {
         client.setAddress(address);
         var objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        try (var jedis = jedisPool.getResource()) {
-            var redisKey = "clientRedis:" + client.getClientType().getPesel();
+        var redisKey = "clientRedis:" + client.getClientType().getPesel();
+        try {
             var clientJson = objectMapper.writeValueAsString(client);
-            jedis.set(redisKey, clientJson);
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating client in Redis", e);
+            cacheService.setCache(redisKey, clientJson);
+        } catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
         }
     }
-
 }
+
