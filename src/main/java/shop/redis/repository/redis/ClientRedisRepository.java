@@ -17,7 +17,6 @@ public class ClientRedisRepository {
     public ClientRedisRepository() {
         this.cacheService = new CacheService();
         this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getProperty("redisUrl"));
-//        this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getPropertyHardcoded());
     }
 
     public void add(Client client) {
@@ -38,6 +37,7 @@ public class ClientRedisRepository {
         try (var jedis = jedisPool.getResource()) {
             var redisKey = "clientRedis:" + pesel;
             var json = jedis.get(redisKey);
+            cacheService.setCache(redisKey, json);
             return Optional.of(objectMapper.readValue(json, Client.class));
         } catch (Exception ignored) {
 
@@ -47,7 +47,7 @@ public class ClientRedisRepository {
 
     public void deleteClient(Client client) {
         String redisKey = "clientRedis:" + client.getClientType().getPesel();
-        new CacheService().invalidateCache(redisKey);
+        cacheService.invalidateCache(redisKey);
     }
 
     public void clientUpdateAddress(Client client, Address address) {

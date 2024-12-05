@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class IndividualClient extends ClientType {
     @Getter
     private String email;

@@ -17,9 +17,12 @@ public class PurchaseRedisRepository {
     private final JedisPool jedisPool;
     private final ObjectMapper objectMapper;
 
+    private final CacheService cacheService;
+
     public PurchaseRedisRepository() {
         this.jedisPool = new JedisPool(new JedisPoolConfig(), new Configuration().getProperty("redisUrl"));
         this.objectMapper = new ObjectMapper();
+        this.cacheService = new CacheService();
         objectMapper.registerModule(new JavaTimeModule());
     }
 
@@ -31,7 +34,7 @@ public class PurchaseRedisRepository {
             }
             var json = objectMapper.writeValueAsString(purchase);
             var redisKey = "purchaseRedis:" + purchase.getId();
-            new CacheService().setCache(redisKey, json);
+            cacheService.setCache(redisKey, json);
         } catch (Exception ignored) {
 
         }
