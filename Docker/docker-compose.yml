@@ -1,91 +1,69 @@
 services:
-  mongo_1:
-    build: .
-    image: mongocustom:7.0.2
-    container_name: mongodb1
-    hostname: mongodb1
-    networks:
-      - mongonet
+  cassandra1:
+    image: docker.io/bitnami/cassandra:5.0
+    hostname: cassandra1
     ports:
-      - "27017:27017"
+      - 7000:7000
+      - 9042:9042
+    volumes:
+      - cassandra1_data:/bitnami
+    networks:
+      cassandranet:
+        ipv4_address: 10.0.0.10
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=adminpassword
-      - MONGO_INITDB_DATABASE=shop
-    command: --config /etc/mongod.conf --port 27017
+      - CASSANDRA_LISTEN_ADDRESS=cassandra1
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra1
+      - CASSANDRA_SEEDS=cassandra1,cassandra2
+      - CASSANDRA_CLUSTER_NAME=nbd-cassandra-cluster
+      - CASSANDRA_DATACENTER=dc1
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_USER=admin
+      - CASSANDRA_PASSWORD=admin
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
     healthcheck:
-      test: [ "CMD","mongosh","--port", "27017", "--eval", "db.adminCommand('ping')" ]
-      interval: 10s
-      timeout: 2s
+      test: [ "CMD-SHELL", "[ $$(nodetool statusgossip) = running ]" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  cassandra2:
+    image: docker.io/bitnami/cassandra:5.0
+    hostname: cassandra2
+    ports:
+      - 7001:7000
+      - 9043:9042
+    volumes:
+      - cassandra2_data:/bitnami
+    networks:
+      cassandranet:
+        ipv4_address: 10.0.0.20
+    environment:
+      - CASSANDRA_LISTEN_ADDRESS=cassandra2
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra2
+      - CASSANDRA_SEEDS=cassandra1,cassandra2
+      - CASSANDRA_CLUSTER_NAME=nbd-cassandra-cluster
+      - CASSANDRA_DATACENTER=dc1
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_USER=admin
+      - CASSANDRA_PASSWORD=admin
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+    healthcheck:
+      test: [ "CMD-SHELL", "[ $$(nodetool statusgossip) = running ]" ]
+      interval: 30s
+      timeout: 10s
       retries: 5
 
-  mongo_2:
-    build: .
-    image: mongocustom:7.0.2
-    container_name: mongodb2
-    hostname: mongodb2
-    networks:
-      - mongonet
-    ports:
-      - "27018:27018"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=adminpassword
-      - MONGO_INITDB_DATABASE=shop
-    command: --config /etc/mongod.conf --port 27018
-    healthcheck:
-      test: [ "CMD","mongosh","--port", "27018", "--eval", "db.adminCommand('ping')" ]
-      interval: 10s
-      timeout: 2s
-      retries: 5
-  mongo_3:
-    build: .
-    image: mongocustom:7.0.2
-    container_name: mongodb3
-    hostname: mongodb3
-    networks:
-      - mongonet
-    ports:
-      - "27019:27019"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=adminpassword
-      - MONGO_INITDB_DATABASE=shop
-    command: --config /etc/mongod.conf --port 27019 --replSet replica_set_single
-    healthcheck:
-      test: [ "CMD","mongosh","--port", "27019", "--eval", "db.adminCommand('ping')" ]
-      interval: 10s
-      timeout: 2s
-      retries: 5
-  mongoinit:
-    build: .
-    image: mongocustom:7.0.2
-    container_name: mongodbinit
-    hostname: mongodbinit
-    networks:
-      - mongonet
-    depends_on:
-      mongo_1:
-        condition: service_healthy
-      mongo_2:
-        condition: service_healthy
-      mongo_3:
-        condition: service_healthy
-    command: >
-      mongosh --host mongodb1:27017 --username admin --password adminpassword --authenticationDatabase admin --eval
-      '      
-      rsconf = 
-      {
-        _id: "replica_set_single",
-        version: 1,
-        members: [
-          { _id: 0, host : "mongodb1:27017" },
-          { _id: 1, host : "mongodb2:27018" },
-          { _id: 2, host : "mongodb3:27019" }
-        ] 
-      };
-      rs.initiate(rsconf);
-      '
+volumes:
+  cassandra1_data:
+  cassandra2_data:
+
 
 networks:
-  mongonet: { }
+  cassandranet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/8
