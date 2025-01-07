@@ -4,16 +4,18 @@ import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.core.metadata.schema.ClusteringOrder;
-import com.datastax.oss.driver.api.core.type.DataType;
 import com.datastax.oss.driver.api.core.type.DataTypes;
-
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
 import com.datastax.oss.driver.api.querybuilder.insert.Insert;
-import com.datastax.oss.driver.api.querybuilder.schema.CreateKeyspace;
 import org.junit.jupiter.api.Test;
+import shop.orm.menagers.TestData;
+import shop.orm.model.Address;
+import shop.orm.repository.classes.AddressCassandra;
+import shop.orm.repository.dao.AddressDao;
+import shop.orm.repository.mapper.AddressMapper;
+import shop.orm.repository.mapper.AddressMapperBuilder;
 
-import static com.datastax.oss.driver.api.querybuilder.SchemaBuilder.createKeyspace;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestImplementation extends AbstractCassandraRepository {
@@ -22,7 +24,7 @@ class TestImplementation extends AbstractCassandraRepository {
     String tableName = "testTable";
 
     TestImplementation() {
-        session =  AbstractCassandraRepository.getDatabase();
+        session = AbstractCassandraRepository.getDatabase();
     }
 
     void createTestTable() {
@@ -31,36 +33,45 @@ class TestImplementation extends AbstractCassandraRepository {
         session.execute(dropTable);
 
         SimpleStatement crateTestTable = SchemaBuilder.createTable(CqlIdentifier.fromCql(tableName)).ifNotExists()
-        .withPartitionKey(CqlIdentifier.fromCql("login"), DataTypes.TEXT)
+                .withPartitionKey(CqlIdentifier.fromCql("login"), DataTypes.TEXT)
                 .withClusteringColumn(CqlIdentifier.fromCql("type"), DataTypes.TEXT)
                 .withClusteringOrder(CqlIdentifier.fromCql("type"), ClusteringOrder.ASC)
                 .build();
         session.execute(crateTestTable);
     }
 
-    void tryInsert(){
+    void tryInsert() {
         Insert insert = QueryBuilder.insertInto(tableName)
                 .value("login", QueryBuilder.literal("testLogin"))
                 .value("type", QueryBuilder.literal("testType"));
         SimpleStatement statement = insert.build();
         session.execute(statement);
     }
+
+
+    void insertOneAddress(Address address) {
+
+        AddressMapper addressMapper = new AddressMapperBuilder(session).build();
+        AddressDao addressDao = addressMapper.addressDao();
+        AddressCassandra addressCassandra = new AddressCassandra(address);
+        addressDao.create(addressCassandra);
+    }
 }
 
 class AbstractCassandraRepositoryTest {
 
-
-
-
     @Test
     void getDatabaseTest() {
-        try(TestImplementation repo = new TestImplementation())
-        {
+        try (TestImplementation repo = new TestImplementation()) {
             repo.createTestTable();
+            assertTrue(true);
             repo.tryInsert();
             assertTrue(true);
+            repo.insertOneAddress(TestData.getClient1().getAddress());
+            assertTrue(true);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            assertTrue(false);
         }
     }
 }
