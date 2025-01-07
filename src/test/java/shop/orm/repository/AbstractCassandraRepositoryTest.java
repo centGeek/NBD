@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import shop.orm.menagers.TestData;
 import shop.orm.model.Address;
 import shop.orm.repository.classes.AddressCassandra;
+import shop.orm.repository.classes.CassandraConsts;
 import shop.orm.repository.dao.AddressDao;
 import shop.orm.repository.mapper.AddressMapper;
 import shop.orm.repository.mapper.AddressMapperBuilder;
@@ -50,6 +51,22 @@ class TestImplementation extends AbstractCassandraRepository {
 
 
     void insertOneAddress(Address address) {
+
+
+        SimpleStatement dropTable = SchemaBuilder.dropTable(CqlIdentifier.fromCql(CassandraConsts.ADDRESS_TABLE_NAME)).ifExists().build();
+        session.execute(dropTable);
+
+        SimpleStatement crateTestTable = SchemaBuilder.createTable(CqlIdentifier.fromCql(CassandraConsts.ADDRESS_TABLE_NAME)).ifNotExists()
+                .withPartitionKey(CqlIdentifier.fromCql("id"), DataTypes.UUID)
+                .withClusteringColumn(CqlIdentifier.fromCql("country"), DataTypes.TEXT)
+                .withClusteringColumn(CqlIdentifier.fromCql("city"), DataTypes.TEXT)
+                .withColumn(CqlIdentifier.fromCql("street"), DataTypes.TEXT)
+                .withColumn(CqlIdentifier.fromCql("postal_code"), DataTypes.TEXT)
+                .withColumn(CqlIdentifier.fromCql("street_number"), DataTypes.TEXT)
+                .withClusteringOrder(CqlIdentifier.fromCql("country"), ClusteringOrder.ASC)
+                .withClusteringOrder(CqlIdentifier.fromCql("city"), ClusteringOrder.ASC)
+                .build();
+        session.execute(crateTestTable);
 
         AddressMapper addressMapper = new AddressMapperBuilder(session).build();
         AddressDao addressDao = addressMapper.addressDao();

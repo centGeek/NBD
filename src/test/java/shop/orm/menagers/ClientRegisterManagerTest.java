@@ -1,43 +1,50 @@
-//package shop.orm.menagers;
-//
-//import org.junit.jupiter.api.AfterAll;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//import shop.orm.model.Address;
-//import shop.orm.model.Client;
-//import shop.orm.repository.AbstractCassandraRepository;
-//import java.util.ArrayList;
-//
-//public class ClientRegisterManagerTest {
-//
-//    @BeforeAll
-//    public static void setUp() {
-//        AbstractCassandraRepository.getDatabase();
-//    }
-//
-//    private final String testClientCollection = "testClients";
-//
-//    @Test
-//    public void addingTestCorrectly() {
-//        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(testClientCollection)) {
-//            Client client = TestData.getClient1();
-//            clientRegisterManager.clientRegister(client);
-//            Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
-//
-//            Assertions.assertThrows(RuntimeException.class, () -> clientRegisterManager.clientRegister(client));
-//
-//            Assertions.assertEquals(1, clientRegisterManager.getAllClients().size());
-//
-//            Client client2 = TestData.getClient3();
-//            clientRegisterManager.clientRegister(client2);
-//            //System.out.println(clientRegisterManager.getAllClients());
-//
-//            Assertions.assertEquals(2, clientRegisterManager.getAllClients().size());
-//        } catch (Exception e) {
-//            Assertions.fail(e.getMessage());
-//        }
-//    }
+package shop.orm.menagers;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import shop.orm.model.Address;
+import shop.orm.model.Client;
+import shop.orm.repository.AbstractCassandraRepository;
+import java.util.ArrayList;
+
+
+public class ClientRegisterManagerTest {
+
+    @BeforeAll
+    public static void setUp() {
+        AbstractCassandraRepository.getDatabase();
+    }
+
+    private final String testClientCollection = "testClients";
+
+    @Test
+    public void addingTestCorrectly() {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
+            Client client = TestData.getClient1();
+            clientRegisterManager.clientRegister(client);
+            Assertions.assertEquals(1, clientRegisterManager.count());
+
+            clientRegisterManager.clientRegister(client);
+
+            //Assertions.assertThrows(RuntimeException.class, () -> clientRegisterManager.clientRegister(client));
+
+
+            Client client2 = TestData.getClient3();
+            clientRegisterManager.clientRegister(client2);
+            //System.out.println(clientRegisterManager.getAllClients());
+
+            Assertions.assertEquals(2, clientRegisterManager.count());
+
+            clientRegisterManager.clientDelete(client2);
+
+            Assertions.assertEquals(1, clientRegisterManager.count());
+
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
 //
 //    @Test
 //    public void randomEntityTest() {
@@ -151,9 +158,9 @@
 //            Assertions.fail(e.getMessage());
 //        }
 //    }
-//
-//    @AfterAll
-//    public static void closeVirtualConnection() {
-//        AbstractCassandraRepository.decrementCounter();
-//    }
-//}
+
+    @AfterAll
+    public static void closeVirtualConnection() {
+        AbstractCassandraRepository.decrementCounter();
+    }
+}
