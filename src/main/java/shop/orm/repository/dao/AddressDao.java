@@ -13,6 +13,6 @@ public interface AddressDao {
     @Insert
     void create(AddressCassandra addressCassandra);
 
-    @Query("SELECT * FROM " + CassandraConsts.ADDRESS_TABLE_NAME + " WHERE id = :id")
-    AddressCassandra findById(UUID id);
+//    @Query("SELECT * FROM " + CassandraConsts.ADDRESS_TABLE_NAME + " WHERE id = :id")
+//    AddressCassandra findById(UUID id);
 }
