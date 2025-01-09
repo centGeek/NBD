@@ -2,6 +2,7 @@ package shop.orm.repository;
 
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.PagingIterable;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
@@ -16,12 +17,14 @@ import shop.orm.model.Client;
 import shop.orm.repository.classes.AddressCassandra;
 import shop.orm.repository.classes.CassandraConsts;
 import shop.orm.repository.classes.ClientCassandra;
+import shop.orm.repository.classes.ClientTypeConsts;
 import shop.orm.repository.dao.ClientDao;
 import shop.orm.repository.mapper.ClientMapper;
 import shop.orm.repository.mapper.ClientMapperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ClientRegisterRepository extends AbstractCassandraRepository {
 
@@ -44,6 +47,9 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
         SimpleStatement dropTypeAddress = SchemaBuilder.dropType(CqlIdentifier.fromCql(CassandraConsts.ADDRESS_TABLE_NAME)).ifExists().build();
         session.execute(dropTypeAddress);
 
+        SimpleStatement dropTypeClientType = SchemaBuilder.dropType(CassandraConsts.CLIENT_TYPE_TABLE_NAME).ifExists().build();
+        session.execute(dropTypeClientType);
+
         //Creating "type" address
         SimpleStatement crateAddressType = SchemaBuilder.createType(CassandraConsts.ADDRESS_TABLE_NAME_CQL).ifNotExists()
                 .withField(CqlIdentifier.fromCql("id"), DataTypes.UUID)
@@ -55,12 +61,27 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
                 .build();
         session.execute(crateAddressType);
 
+        SimpleStatement createClientType = SchemaBuilder.createType(CassandraConsts.CLIENT_TYPE_TABLE_NAME).ifNotExists()
+                .withField(CqlIdentifier.fromCql("entity_id"),DataTypes.UUID)
+                .withField(CqlIdentifier.fromCql("discriminator"), DataTypes.TEXT)
+                .withField(ClientTypeConsts.PESEL_CQL, DataTypes.TEXT)
+                .withField(ClientTypeConsts.COMPANY_NAME,DataTypes.TEXT)
+                .withField(ClientTypeConsts.NIP,DataTypes.BIGINT)
+                .withField(ClientTypeConsts.EMAIL,DataTypes.TEXT)
+                .withField(ClientTypeConsts.BIRTHDATE,DataTypes.TIME)
+                .build();
+        session.execute(createClientType);
+
         //Creating ClientTable
         SimpleStatement createClientTable = SchemaBuilder.createTable(CassandraConsts.CLIENT_TABLE_NAME_CQL).ifNotExists()
                 .withPartitionKey(CassandraConsts.CLIENT_ID, DataTypes.UUID)
                 .withColumn(CassandraConsts.ADDRESSES_FIELD, SchemaBuilder.udt(CassandraConsts.ADDRESS_DATA_TYPE, true))
+                .withColumn(CassandraConsts.CLIENT_TYPE_TABLE_NAME_CQL, SchemaBuilder.udt(CassandraConsts.CLIENT_TYPE_TABLE_NAME_CQL, true))
                 .build();
         session.execute(createClientTable);
+
+
+
 
     }
 
@@ -118,43 +139,45 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
     }
 
     public void clientUpdateAddress(Client client, Address address) {
-//
-//        MongoCollection<ClientMdb> collection = database.getCollection(nameOfCollection, ClientMdb.class);
-//        Bson filter = Filters.eq("_id", client.getId().toString());
-//        ArrayList<ClientMdb> arrayList = collection.find(filter).into(new ArrayList<>());
-//        if (arrayList.size() == 1) {
-//            Bson update = Updates.set("address", new AddressMdb(address, client.getId().toString()));
-//            collection.updateOne(filter, update);
-//            client.setAddress(address);
-//        }
+        ClientMapper clientMapper = new ClientMapperBuilder(session).build();
+        ClientDao clientDao = clientMapper.clientDao();
+
+
+        ClientCassandra clientCassandra = clientDao.findById(client.getId());
+        if (clientCassandra != null) {
+            clientDao.delete(clientCassandra);
+            client.setAddress(address);
+            clientCassandra = new ClientCassandra(client);
+            clientDao.insert(clientCassandra);
+        }
     }
 
-//    public List<Client> getAllClients() {
-//
-//        ClientMapper clientMapper = new ClientMapperBuilder(session).build();
-//        ClientDao clientDao = clientMapper.clientDao();
-//
-//        ResultSet resultSet = clientDao.getAllClients();
-//
-//        List<ClientCassandra> clientCassandraList = new ArrayList<>();
-//
-//        List<Client> clients = new ArrayList<>();
-//
-//        for (Row row : resultSet)
-//        {
-//            clientCassandraList.add(new ClientCassandra(row.getUuid(CassandraConsts.CLIENT_ID_NAME),row.get(CassandraConsts.ADDRESS_DATA_TYPE,AddressCassandra.class)));
-//        }
-//
-//        for (ClientCassandra clientCassandra : clientCassandraList) {
-//
-//
-//            clients.add(clientCassandra.toClient());
-////                    UUID.fromString(clientMdb.getEntityId()), AddressMdb.AddresMdbToAddress(clientMdb.getAddressMdb()),
-////                    new IndividualClient("03222222111", "email2@gmail.com",
-////                            LocalDate.of(2022, 10, 21))));
-//        }
-//
-//        return clients;
-//    }
 
+    public List<Client> getAllClients() {
+
+        ClientMapper clientMapper = new ClientMapperBuilder(session).build();
+        ClientDao clientDao = clientMapper.clientDao();
+
+        PagingIterable<ClientCassandra> clientCassandraList = clientDao.getAllClients();
+
+        List<Client> clients = new ArrayList<>();
+
+        for (ClientCassandra clientCassandra : clientCassandraList) {
+
+            clients.add(clientCassandra.toClient());
+//                    UUID.fromString(clientMdb.getEntityId()), AddressMdb.AddresMdbToAddress(clientMdb.getAddressMdb()),
+//                    new IndividualClient("03222222111", "email2@gmail.com",
+//                            LocalDate.of(2022, 10, 21))));
+        }
+
+        return clients;
+    }
+
+    public Client findById(UUID id) {
+        ClientMapper clientMapper = new ClientMapperBuilder(session).build();
+        ClientDao clientDao = clientMapper.clientDao();
+        ClientCassandra clientCassandra = clientDao.findById(id);
+
+        return clientCassandra.toClient();
+    }
 }

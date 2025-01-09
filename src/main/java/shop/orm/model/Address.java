@@ -59,11 +59,11 @@ public class Address {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(getCity(), address.getCity()) && Objects.equals(getCountry(), address.getCountry()) && Objects.equals(getPostal_code(), address.getPostal_code()) && Objects.equals(getStreet(), address.getStreet()) && Objects.equals(getStreet_number(), address.getStreet_number());
+        return Objects.equals(getId(), address.getId()) && Objects.equals(getCity(), address.getCity()) && Objects.equals(getCountry(), address.getCountry()) && Objects.equals(getPostal_code(), address.getPostal_code()) && Objects.equals(getStreet(), address.getStreet()) && Objects.equals(getStreet_number(), address.getStreet_number());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCity(), getCountry(), getPostal_code(), getStreet(), getStreet_number());
+        return Objects.hash(getId(), getCity(), getCountry(), getPostal_code(), getStreet(), getStreet_number());
     }
 }

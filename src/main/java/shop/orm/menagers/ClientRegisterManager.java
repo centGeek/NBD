@@ -6,6 +6,7 @@ import shop.orm.model.Client;
 import shop.orm.repository.ClientRegisterRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ClientRegisterManager implements AutoCloseable {
     private final ClientRegisterRepository clientRegisterRepository;
@@ -22,9 +23,9 @@ public class ClientRegisterManager implements AutoCloseable {
         clientRegisterRepository.clientDelete(client);
     }
 
-//    public List<Client> getAllClients() {
-//        return clientRegisterRepository.getAllClients();
-//    }
+    public List<Client> getAllClients() {
+        return clientRegisterRepository.getAllClients();
+    }
 
     public void clientUpdateAddress(Client client, Address address) {
         clientRegisterRepository.clientUpdateAddress(client, address);
@@ -32,6 +33,10 @@ public class ClientRegisterManager implements AutoCloseable {
 
     public long count(){
         return clientRegisterRepository.count();
+    }
+
+    public Client getClientById(UUID id) {
+        return clientRegisterRepository.findById(id);
     }
 
     @Override

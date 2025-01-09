@@ -5,12 +5,7 @@ import com.datastax.oss.driver.api.mapper.annotations.Entity;
 import com.datastax.oss.driver.api.mapper.annotations.PartitionKey;
 import com.datastax.oss.driver.api.mapper.annotations.PropertyStrategy;
 import com.datastax.oss.driver.api.mapper.entity.naming.GetterStyle;
-import lombok.Getter;
-import lombok.Setter;
-import shop.orm.model.Address;
-import shop.orm.model.Client;
-import shop.orm.model.ClientType;
-import shop.orm.model.CompanyClient;
+import shop.orm.model.*;
 
 import java.util.UUID;
 
@@ -20,28 +15,33 @@ import java.util.UUID;
 @PropertyStrategy(mutable = false, getterStyle = GetterStyle.JAVABEANS)
 public class ClientCassandra {
 
-    public ClientCassandra(UUID id, AddressCassandra address) {
-        this.address = address;
-        this.id = id;
-    }
 
     public ClientCassandra(Client client) {
         this.id = client.getId();
         this.address = new AddressCassandra(client.getAddress());
+        this.clientTypeCassandra = clientTypeToClientTypeCassandra(client.getClientType());
     }
+
+    public ClientCassandra(UUID id, AddressCassandra address, ClientTypeCassandra clientTypeCassandra) {
+        this.id = id;
+        this.address = address;
+        this.clientTypeCassandra = clientTypeCassandra;
+    }
+
     @CqlName(CassandraConsts.CLIENT_ID_NAME)
     @PartitionKey
     private UUID id;
 
 
     private AddressCassandra address;
-//    @Getter
-//    private ClientType clientType;
+
+    @CqlName(CassandraConsts.CLIENT_TYPE_TABLE_NAME)
+    private ClientTypeCassandra clientTypeCassandra;
 
 
     public static Client ClientCassandraToClient(ClientCassandra cassandra) {
         //TODO poprawic
-        Client client = new Client(cassandra.getAddress().toAddress(),new CompanyClient("1251251251",125,"asdasd"));
+        Client client = new Client(cassandra.getId(), cassandra.getAddress().toAddress(), new CompanyClient("1251251251", 125, "asdasd"));
         return client;
     }
 
@@ -55,5 +55,20 @@ public class ClientCassandra {
 
     public AddressCassandra getAddress() {
         return address;
+    }
+
+    public ClientTypeCassandra getClientTypeCassandra() {
+        return clientTypeCassandra;
+    }
+
+    private static ClientTypeCassandra clientTypeToClientTypeCassandra(ClientType clientType) {
+        if (clientType instanceof CompanyClient) {
+            CompanyClient companyClient = (CompanyClient) clientType;
+            return new CompanyCassandra(UUID.randomUUID(), companyClient.getCompanyName(), companyClient.getNIP(), companyClient.getPesel(), "company");
+        }
+        if (clientType instanceof IndividualClient) {
+            IndividualClient individualClient = (IndividualClient) clientType;
+            return new IndividualClientCassandra(UUID.randomUUID(), individualClient.getEmail(), individualClient.getBirthDate(), individualClient.getPesel(), "individual");
+        } else throw new IllegalArgumentException("Unsupported clientType");
     }
 }

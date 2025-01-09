@@ -15,10 +15,10 @@ import java.util.UUID;
 @CqlName(CassandraConsts.ADDRESS_TABLE_NAME)  //Kluczowe jezeli jednak klasa nazywa sie inaczej niz bysmy chcieli tabele.
 public class AddressCassandra {
 
-    public AddressCassandra(UUID id, String city, String country, String postal_code, String street, String street_number) {
+    public AddressCassandra(UUID id, String country, String city, String street, String postal_code, String street_number) {
         this.id = id;
-        this.city = city;
         this.country = country;
+        this.city = city;
         this.postal_code = postal_code;
         this.street = street;
         this.street_number = street_number;
