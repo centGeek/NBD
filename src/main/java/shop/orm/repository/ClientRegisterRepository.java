@@ -68,7 +68,7 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
                 .withField(ClientTypeConsts.COMPANY_NAME,DataTypes.TEXT)
                 .withField(ClientTypeConsts.NIP,DataTypes.BIGINT)
                 .withField(ClientTypeConsts.EMAIL,DataTypes.TEXT)
-                .withField(ClientTypeConsts.BIRTHDATE,DataTypes.TIME)
+                .withField(ClientTypeConsts.BIRTHDATE,DataTypes.DATE)
                 .build();
         session.execute(createClientType);
 

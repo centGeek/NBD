@@ -40,8 +40,7 @@ public class ClientCassandra {
 
 
     public static Client ClientCassandraToClient(ClientCassandra cassandra) {
-        //TODO poprawic
-        Client client = new Client(cassandra.getId(), cassandra.getAddress().toAddress(), new CompanyClient("1251251251", 125, "asdasd"));
+        Client client = new Client(cassandra.getId(), cassandra.getAddress().toAddress(), cassandra.getClientTypeCassandra().toClientType());
         return client;
     }
 
@@ -64,11 +63,13 @@ public class ClientCassandra {
     private static ClientTypeCassandra clientTypeToClientTypeCassandra(ClientType clientType) {
         if (clientType instanceof CompanyClient) {
             CompanyClient companyClient = (CompanyClient) clientType;
-            return new CompanyCassandra(UUID.randomUUID(), companyClient.getCompanyName(), companyClient.getNIP(), companyClient.getPesel(), "company");
+            return new ClientTypeCassandra(UUID.randomUUID(), companyClient.getPesel(), "company", null, null, companyClient.getCompanyName(), companyClient.getNIP());
         }
         if (clientType instanceof IndividualClient) {
             IndividualClient individualClient = (IndividualClient) clientType;
-            return new IndividualClientCassandra(UUID.randomUUID(), individualClient.getEmail(), individualClient.getBirthDate(), individualClient.getPesel(), "individual");
+            return new ClientTypeCassandra(UUID.randomUUID(), individualClient.getPesel(), "individual", individualClient.getEmail(), individualClient.getBirthDate(), null, 0L);
         } else throw new IllegalArgumentException("Unsupported clientType");
     }
+
+
 }

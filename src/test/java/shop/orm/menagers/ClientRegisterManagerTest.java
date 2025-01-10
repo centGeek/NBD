@@ -40,7 +40,7 @@ public class ClientRegisterManagerTest {
 
 
             Client client1FromDatabase = clientRegisterManager.getClientById(client.getId());
-            Assertions.assertEquals(client, client1FromDatabase);
+            Assertions.assertEquals(client.toString(), client1FromDatabase.toString());
 
 
 
@@ -59,8 +59,8 @@ public class ClientRegisterManagerTest {
             Client client1 = TestData.getClient1();
             Client client2 = TestData.getClient2();
 
-            clientRegisterManager.clientRegister(client1);
             clientRegisterManager.clientRegister(client2);
+            clientRegisterManager.clientRegister(client1);
 
             Assertions.assertEquals(2,
                     clientRegisterManager.count());
@@ -91,7 +91,8 @@ public class ClientRegisterManagerTest {
                     clientRegisterManager.getClientById(client.getId()).getAddress());
             clientRegisterManager.clientDelete(client);
         } catch (Exception e) {
-            Assertions.fail(e.getMessage());
+            e.printStackTrace();
+            Assertions.fail(e.getStackTrace().toString());
         }
     }
 
