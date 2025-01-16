@@ -40,6 +40,17 @@ public final class CassandraConsts {
     public static final CqlIdentifier PRODUCT_BOUGHT_CQL = CqlIdentifier.fromCql("product_bought");
     public static final String PRODUCT_BOUGHT_NAME = "product_bought";
 
+
+    //PurchaseByClient
+    public static final CqlIdentifier PURCHASES_BY_CLIENT_TABLE_CQL = CqlIdentifier.fromCql("purchases_by_client");
+    public static final String  PURCHASES_BY_CLIENT_TABLE_NAME = "purchases_by_client";
+
+
+
+
+
+
+
     private CassandraConsts() {
 
     }
