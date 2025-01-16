@@ -12,9 +12,6 @@
 //    public PurchaseManager() {
 //        this.purchaseRepository = new PurchaseRepository();
 //    }
-//    public PurchaseManager(String nameOfCollection) {
-//        this.purchaseRepository = new PurchaseRepository(nameOfCollection);
-//    }
 //
 //    public List<Purchase> getAllPurchasesByClient(Client client) {
 //        return purchaseRepository.getAllPurchasesByClient(client);

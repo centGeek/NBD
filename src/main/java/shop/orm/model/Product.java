@@ -20,12 +20,12 @@ public class Product {
 
     private boolean isProductBought;
 
-    private Purchase purchase;
 
     public Product() {
 
     }
-    public Product(String productName, BigDecimal price, boolean isProductBought,UUID uuid ) {
+
+    public Product(String productName, BigDecimal price, boolean isProductBought, UUID uuid) {
         this.productName = productName;
         this.price = price;
         this.isProductBought = isProductBought;
@@ -44,12 +44,12 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return isProductBought() == product.isProductBought() && Objects.equals(getId(), product.getId()) && Objects.equals(getProductName(), product.getProductName()) && Objects.equals(getPrice(), product.getPrice()) && Objects.equals(getPurchase(), product.getPurchase());
+        return isProductBought() == product.isProductBought() && Objects.equals(getId(), product.getId()) && Objects.equals(getProductName(), product.getProductName()) && Objects.equals(getPrice(), product.getPrice());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getProductName(), getPrice(), isProductBought(), getPurchase());
+        return Objects.hash(getId(), getProductName(), getPrice(), isProductBought());
     }
 
     @Override

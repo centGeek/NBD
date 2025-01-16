@@ -27,6 +27,8 @@ public interface ClientDao {
     @Delete
     void delete(ClientCassandra clientCassandra);
 
+    @Update
+    void update(ClientCassandra clientCassandra);
 
     @Select/*("SELECT * FROM " + CassandraConsts.CLIENT_TABLE_NAME)*/
     PagingIterable<ClientCassandra> getAllClients();

@@ -28,20 +28,26 @@ import java.util.UUID;
 
 public class ClientRegisterRepository extends AbstractCassandraRepository {
 
-    private final String nameOfCollection;
     private final CqlSession session;
     protected static final Logger logger = LogManager.getLogger(ClientRegisterRepository.class);
 
     public ClientRegisterRepository() {
         this.session = AbstractCassandraRepository.getDatabase();
-        this.nameOfCollection = "clients";
         createTables();
     }
+
+    public ClientRegisterRepository(boolean dropAndCreate) {
+        this.session = AbstractCassandraRepository.getDatabase();
+        if (dropAndCreate) {
+            createTables();
+        }
+    }
+
 
     private void createTables() {
         //Drop and create
 
-        SimpleStatement dropTableClient = SchemaBuilder.dropTable(CqlIdentifier.fromCql(CassandraConsts.CLIENT_TABLE_NAME)).ifExists().build();
+        SimpleStatement dropTableClient = SchemaBuilder.dropTable(CassandraConsts.CLIENT_TABLE_NAME_CQL).ifExists().build();
         session.execute(dropTableClient);
 
         SimpleStatement dropTypeAddress = SchemaBuilder.dropType(CqlIdentifier.fromCql(CassandraConsts.ADDRESS_TABLE_NAME)).ifExists().build();
@@ -62,13 +68,13 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
         session.execute(crateAddressType);
 
         SimpleStatement createClientType = SchemaBuilder.createType(CassandraConsts.CLIENT_TYPE_TABLE_NAME).ifNotExists()
-                .withField(CqlIdentifier.fromCql("entity_id"),DataTypes.UUID)
+                .withField(CqlIdentifier.fromCql("entity_id"), DataTypes.UUID)
                 .withField(CqlIdentifier.fromCql("discriminator"), DataTypes.TEXT)
                 .withField(ClientTypeConsts.PESEL_CQL, DataTypes.TEXT)
-                .withField(ClientTypeConsts.COMPANY_NAME,DataTypes.TEXT)
-                .withField(ClientTypeConsts.NIP,DataTypes.BIGINT)
-                .withField(ClientTypeConsts.EMAIL,DataTypes.TEXT)
-                .withField(ClientTypeConsts.BIRTHDATE,DataTypes.DATE)
+                .withField(ClientTypeConsts.COMPANY_NAME, DataTypes.TEXT)
+                .withField(ClientTypeConsts.NIP, DataTypes.BIGINT)
+                .withField(ClientTypeConsts.EMAIL, DataTypes.TEXT)
+                .withField(ClientTypeConsts.BIRTHDATE, DataTypes.DATE)
                 .build();
         session.execute(createClientType);
 
@@ -79,8 +85,6 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
                 .withColumn(CassandraConsts.CLIENT_TYPE_TABLE_NAME_CQL, SchemaBuilder.udt(CassandraConsts.CLIENT_TYPE_TABLE_NAME_CQL, true))
                 .build();
         session.execute(createClientTable);
-
-
 
 
     }
@@ -96,26 +100,17 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
 
 
     public void clientRegister(Client client) {
-//        try {
-        String pesel = client.getClientType().getPesel();
+        //Jak bedzie sie chcialo dodac tego samego to cassandra nawet nie zareaguje.
+        try {
+            ClientMapper clientMapper = new ClientMapperBuilder(session).build();
+            ClientDao clientDao = clientMapper.clientDao();
+            ClientCassandra clientCassandra = new ClientCassandra(client);
+            clientDao.insert(clientCassandra);
+        } catch (Exception e) {
+            logger.error(e);
+            //throw new RuntimeException(e);
+        }
 
-
-//            List<ClientMdb> clientByPesel = this.getClientByPesel(pesel);
-//            if (clientByPesel.isEmpty()) {
-
-        ClientMapper clientMapper = new ClientMapperBuilder(session).build();
-        ClientDao clientDao = clientMapper.clientDao();
-        ClientCassandra clientCassandra = new ClientCassandra(client);
-        clientDao.insert(clientCassandra);
-
-//            } else {
-//                logger.log(Level.ERROR, String.format("Can not register client. Client with pesel: %s already exists", pesel));
-//                throw new RuntimeException("Can not register client. Client with pesel: " + pesel + " already exists");
-//            }
-//        } catch (Exception e) {
-//            logger.log(Level.ERROR, "Registering client did not went correctly");
-//            throw new RuntimeException(e);
-//        }
     }
 
     public void clientDelete(Client client) {
@@ -141,14 +136,13 @@ public class ClientRegisterRepository extends AbstractCassandraRepository {
     public void clientUpdateAddress(Client client, Address address) {
         ClientMapper clientMapper = new ClientMapperBuilder(session).build();
         ClientDao clientDao = clientMapper.clientDao();
-
-
         ClientCassandra clientCassandra = clientDao.findById(client.getId());
         if (clientCassandra != null) {
-            clientDao.delete(clientCassandra);
+            //podobno mniej optymalne od UPDATE
+            //clientDao.delete(clientCassandra);
             client.setAddress(address);
             clientCassandra = new ClientCassandra(client);
-            clientDao.insert(clientCassandra);
+            clientDao.update(clientCassandra);
         }
     }
 

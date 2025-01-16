@@ -15,6 +15,11 @@ public class ClientRegisterManager implements AutoCloseable {
         this.clientRegisterRepository = new ClientRegisterRepository();
     }
 
+    public ClientRegisterManager(boolean dropAndCreate) {
+        this.clientRegisterRepository = new ClientRegisterRepository(dropAndCreate);
+    }
+
+
     public void clientRegister(Client client) {
         clientRegisterRepository.clientRegister(client);
     }

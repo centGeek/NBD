@@ -6,21 +6,20 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import shop.orm.model.Address;
 import shop.orm.model.Client;
-import shop.orm.repository.AbstractCassandraRepository;
-
-import java.util.ArrayList;
 
 
 public class ClientRegisterManagerTest {
 
+    private static ClientRegisterManager testConnection;
+
     @BeforeAll
     public static void setUp() {
-        AbstractCassandraRepository.getDatabase();
+        testConnection = new ClientRegisterManager(true);
     }
 
     @Test
     public void addingTestCorrectly() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(false)) {
             Client client = TestData.getClient1();
             clientRegisterManager.clientRegister(client);
             Assertions.assertEquals(1, clientRegisterManager.count());
@@ -37,11 +36,8 @@ public class ClientRegisterManagerTest {
             Assertions.assertEquals(2, clientRegisterManager.count());
 
 
-
-
             Client client1FromDatabase = clientRegisterManager.getClientById(client.getId());
-            Assertions.assertEquals(client.toString(), client1FromDatabase.toString());
-
+            Assertions.assertEquals(client, client1FromDatabase);
 
 
             clientRegisterManager.clientDelete(client);
@@ -53,7 +49,7 @@ public class ClientRegisterManagerTest {
 
     @Test
     public void clientDeletingSuccessFully() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(false)) {
             Assertions.assertEquals(0, clientRegisterManager.count());
 
             Client client1 = TestData.getClient1();
@@ -79,7 +75,7 @@ public class ClientRegisterManagerTest {
 
     @Test
     public void clientUpdateAddress() {
-        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager()) {
+        try (ClientRegisterManager clientRegisterManager = new ClientRegisterManager(false)) {
             Client client = TestData.getClient1();
             clientRegisterManager.clientRegister(client);
             Address address = new Address(
@@ -98,6 +94,10 @@ public class ClientRegisterManagerTest {
 
     @AfterAll
     public static void closeVirtualConnection() {
-        AbstractCassandraRepository.decrementCounter();
+        try {
+            testConnection.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,8 +1,12 @@
 package shop.orm.model;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
+
 
 public class CompanyClient extends ClientType {
 
@@ -26,5 +30,16 @@ public class CompanyClient extends ClientType {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompanyClient that = (CompanyClient) o;
+        return getNIP() == that.getNIP() && Objects.equals(getCompanyName(), that.getCompanyName());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCompanyName(), getNIP());
+    }
 }
