@@ -3,6 +3,7 @@ package shop.orm.repository.dao;
 import com.datastax.oss.driver.api.mapper.annotations.Dao;
 import com.datastax.oss.driver.api.mapper.annotations.Insert;
 import com.datastax.oss.driver.api.mapper.annotations.Query;
+import com.datastax.oss.driver.api.mapper.annotations.StatementAttributes;
 import shop.orm.repository.classes.AddressCassandra;
 import shop.orm.repository.classes.CassandraConsts;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Dao
 public interface AddressDao {
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Insert
     void create(AddressCassandra addressCassandra);
 

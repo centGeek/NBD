@@ -13,23 +13,29 @@ import java.util.UUID;
 public interface ProductDao {
 
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Insert
     void insert(ProductCassandra productCassandra);
 
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Query("SELECT COUNT(*) FROM " + CassandraConsts.PRODUCT_TABLE_NAME)
     long count();
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Select
     PagingIterable<ProductCassandra> findByName(String string);
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Select
     ProductCassandra findByNameAndId(String name, UUID id);
 
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Update
     void update(ProductCassandra productCassandra);
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Delete
     void delete(ProductCassandra productCassandra);
 

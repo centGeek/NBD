@@ -22,7 +22,6 @@ public abstract class AbstractCassandraRepository implements AutoCloseable {
 
 
     public static CqlSession getDatabase() {
-        //TODO optymalizacja
         closedCounter++;
         if (session == null) {
 

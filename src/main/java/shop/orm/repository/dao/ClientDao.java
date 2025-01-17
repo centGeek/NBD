@@ -14,22 +14,27 @@ import java.util.UUID;
 
 @Dao
 public interface ClientDao {
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Insert
     void insert(ClientCassandra clientCassandra);
 
-
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Query("SELECT COUNT(*) FROM " + CassandraConsts.CLIENT_TABLE_NAME)
     long count();
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Select
     ClientCassandra findById(UUID id);
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Delete
     void delete(ClientCassandra clientCassandra);
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Update
     void update(ClientCassandra clientCassandra);
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Select/*("SELECT * FROM " + CassandraConsts.CLIENT_TABLE_NAME)*/
     PagingIterable<ClientCassandra> getAllClients();
 

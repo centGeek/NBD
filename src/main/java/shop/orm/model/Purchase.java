@@ -16,6 +16,7 @@ public class Purchase {
 
     private Client client;
 
+    private List<Product> products = new ArrayList<>();
 
     public Purchase(Client client, List<Product> products) {
         id = UUID.randomUUID();
@@ -36,11 +37,13 @@ public class Purchase {
         return Objects.hash(getId(), getClient(), getProducts());
     }
 
-    private List<Product> products = new ArrayList<>();
-
     @Override
     public String toString() {
         return "Purchase{" + " products=" + products +
                 '}';
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 }

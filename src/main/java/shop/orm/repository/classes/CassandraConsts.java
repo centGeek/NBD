@@ -1,6 +1,7 @@
 package shop.orm.repository.classes;
 
 import com.datastax.oss.driver.api.core.CqlIdentifier;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 public final class CassandraConsts {
 
@@ -43,13 +44,28 @@ public final class CassandraConsts {
 
     //PurchaseByClient
     public static final CqlIdentifier PURCHASES_BY_CLIENT_TABLE_CQL = CqlIdentifier.fromCql("purchases_by_client");
-    public static final String  PURCHASES_BY_CLIENT_TABLE_NAME = "purchases_by_client";
+    public static final String PURCHASES_BY_CLIENT_TABLE_NAME = "purchases_by_client";
+
+    public static final String PURCHASE_BY_CLIENT_ID_NAME = "purchase_by_client_id";
+    public static final CqlIdentifier PURCHASE_BY_CLIENT_ID_CQL = CqlIdentifier.fromCql("purchase_by_client_id");
+
+    public static final String PURCHASE_BY_CLIENT_PRODUCTS_NAME = "purchase_by_client_products";
+    public static final CqlIdentifier PURCHASE_BY_CLIENT_PRODUCTS_CQL = CqlIdentifier.fromCql("purchase_by_client_products");
 
 
+    //PurchaseByProduct
 
+    public static final CqlIdentifier PURCHASE_BY_PRODUCT_CQL = CqlIdentifier.fromCql("purchase_by_product");
+    public static final String PURCHASE_BY_PRODUCT_NAME = "purchase_by_product";
 
+    public static final CqlIdentifier PURCHASE_BY_PRODUCT_ID_CQL = CqlIdentifier.fromCql("purchase_by_product_id");
+    public static final String PURCHASE_BY_PRODUCT_ID_NAME = "purchase_by_product_id";
 
+    public static final CqlIdentifier PURCHASE_BY_PRODUCT_PRODUCT_CQL = CqlIdentifier.fromCql("purchase_by_product_product");
+    public static final String PURCHASE_BY_PRODUCT_PRODUCT_NAME = "purchase_by_product_product";
 
+    public static final CqlIdentifier PURCHASE_ID_CQL = CqlIdentifier.fromCql("purchase_id");
+    public static final String PURCHASE_ID_NAME = "purchase_id";
 
     private CassandraConsts() {
 
