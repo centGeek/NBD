@@ -19,6 +19,9 @@ public class Address {
         this.street_number = street_number;
     }
 
+    public Address() {
+    }
+
     public Address(UUID id, String city, String country, String postal_code, String street, String street_number) {
         this.id = id;
         this.city = city;
@@ -26,6 +29,7 @@ public class Address {
         this.postal_code = postal_code;
         this.street = street;
         this.street_number = street_number;
+
     }
 
     @Getter

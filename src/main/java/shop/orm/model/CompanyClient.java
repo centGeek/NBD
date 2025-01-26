@@ -18,6 +18,8 @@ public class CompanyClient extends ClientType {
         this.companyName = companyName;
     }
 
+    public CompanyClient() {
+    }
 
     @Override
     public String toString() {

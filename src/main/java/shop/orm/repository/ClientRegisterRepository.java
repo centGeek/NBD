@@ -40,6 +40,7 @@ public class ClientRegisterRepository extends AbstractMongoRepository {
 
     public void clientRegister(Client client) {
         try {
+            System.out.println(client);
             String pesel = client.getClientType().getPesel();
 
 

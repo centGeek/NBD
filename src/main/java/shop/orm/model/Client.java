@@ -21,6 +21,9 @@ public class Client {
         this.clientType = clientType;
     }
 
+    public Client() {
+    }
+
     @Getter
     private UUID id;
 

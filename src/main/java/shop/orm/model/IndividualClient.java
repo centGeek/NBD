@@ -1,17 +1,9 @@
 package shop.orm.model;
-
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.time.LocalDate;
 
 
-
 @Getter
-
 public class IndividualClient extends ClientType {
     @Getter
     private String email;
@@ -24,6 +16,8 @@ public class IndividualClient extends ClientType {
         this.birthDate = birthDate;
     }
 
+    public IndividualClient() {
+    }
 
     @Override
     public String toString() {
