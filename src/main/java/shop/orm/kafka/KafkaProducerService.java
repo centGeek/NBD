@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -41,6 +42,7 @@ public class KafkaProducerService {
 
     public void sendEvent(Purchase purchase) {
         try {
+
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -73,19 +75,7 @@ public class KafkaProducerService {
             e.printStackTrace();
         }
     }
-    public static void createTopic(String topicName, int numPartitions, short replicationFactor) {
-        Properties properties = new Properties();
-        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9192,kafka2:9292,kafka3:9392");
 
-        try (AdminClient adminClient = AdminClient.create(properties)) {
-            NewTopic newTopic = new NewTopic(topicName, numPartitions, replicationFactor);
-            adminClient.createTopics(Collections.singletonList(newTopic)).all().get();
-            System.out.println("Topic " + topicName + " created with " + numPartitions + " partitions.");
-        } catch (Exception e) {
-            System.err.println("Error creating topic: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     public void close() {
         producer.close();

@@ -3,6 +3,7 @@ package shop.orm.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,11 @@ import java.util.UUID;
 @Getter
 public class Purchase {
 
+    @Setter
     private UUID id;
     private Client client;
     private List<Product> products;
 
-    // Konstruktor wymagający dla Jacksona
     @JsonCreator
     public Purchase(@JsonProperty("client") Client client, @JsonProperty("products") List<Product> products) {
         this.id = UUID.randomUUID();

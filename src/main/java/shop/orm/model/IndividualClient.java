@@ -21,8 +21,11 @@ public class IndividualClient extends ClientType {
 
     @Override
     public String toString() {
-        return "IndividualClient{" + "email='" + email + '\'' +
-                ", birthDate=" + birthDate +
-                '}';
+        final StringBuilder sb = new StringBuilder("IndividualClient{");
+        sb.append("pesel='").append(getPesel()).append('\'');
+        sb.append("email='").append(email).append('\'');
+        sb.append(", birthDate=").append(birthDate);
+        sb.append('}');
+        return sb.toString();
     }
 }

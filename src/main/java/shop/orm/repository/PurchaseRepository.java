@@ -19,6 +19,7 @@ import shop.orm.repository.MongoDBClasses.PurchaseMdb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PurchaseRepository extends AbstractMongoRepository {
 
@@ -65,6 +66,7 @@ public class PurchaseRepository extends AbstractMongoRepository {
     }
 
     public void makeAPurchase(Purchase purchase) {
+        purchase.setId(UUID.randomUUID());
         ClientSession clientSession = mongoClient.startSession();
         try {
             clientSession.startTransaction();
