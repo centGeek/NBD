@@ -77,6 +77,7 @@ public class KafkaConsumerService {
                         Purchase purchase = objectMapper.readValue(record.value(), Purchase.class);
                         System.out.println("Deserialized Purchase: " + purchase);
                         purchaseManager.makeAPurchase(purchase);
+                        consumer.commitSync();
                     } catch (JsonProcessingException e) {
                         System.err.println("Error deserializing record: " + e.getMessage());
                         e.printStackTrace();

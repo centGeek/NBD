@@ -66,7 +66,6 @@ public class PurchaseRepository extends AbstractMongoRepository {
 
     public void makeAPurchase(Purchase purchase) {
         ClientSession clientSession = mongoClient.startSession();
-        //niestety nie da się z try with resources (chyba że automatycznie otwiera wtedy i zamyka tranzakcje)
         try {
             clientSession.startTransaction();
 

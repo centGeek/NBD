@@ -22,6 +22,7 @@ public class Client {
     }
 
     public Client() {
+        this.id = UUID.randomUUID();
     }
 
     @Getter

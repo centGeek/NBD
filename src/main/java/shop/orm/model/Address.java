@@ -20,10 +20,11 @@ public class Address {
     }
 
     public Address() {
+        this.id = UUID.randomUUID();
     }
 
     public Address(UUID id, String city, String country, String postal_code, String street, String street_number) {
-        this.id = id;
+        this.id = UUID.randomUUID();
         this.city = city;
         this.country = country;
         this.postal_code = postal_code;

@@ -25,6 +25,7 @@ public class Purchase {
     }
 
     public Purchase() {
+        this.id = UUID.randomUUID();
     }
 
     @Override
