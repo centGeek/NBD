@@ -47,10 +47,12 @@ public class KafkaConsumerService {
 
     private static void consume(KafkaConsumer<UUID, String> consumer) {
         try {
+            System.out.println("Starting poll...");
+            long startTime = System.currentTimeMillis();
             consumer.poll(0);
+            System.out.println("Poll took: " + (System.currentTimeMillis() - startTime) + "ms");
             Set<TopicPartition> consumerAssigment = consumer.assignment();
             System.out.println("Assigned partitions: " + consumerAssigment);
-//            consumer.seekToBeginning(consumerAssigment);
 
             Duration timeout = Duration.of(100, ChronoUnit.MILLIS);
 
@@ -113,7 +115,7 @@ public class KafkaConsumerService {
             for (KafkaConsumer<UUID, String> consumer : consumerGroup) {
                 executorService.execute(() -> consume(consumer));
             }
-            Thread.sleep(10000);
+            Thread.sleep(100);
 //            for (KafkaConsumer<UUID, String> consumer : consumerGroup) {
 //                consumer.wakeup();
 //            }
