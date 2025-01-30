@@ -12,7 +12,7 @@ public class ProducerServiceMain {
     public static void main(String[] args) {
         KafkaProducerService kafkaProducerService = new KafkaProducerService("purchase-topic2");
         Client client1 = new Client(new Address("Lodz", "Polska", "93-590", "Politechniki", "10")
-                ,new IndividualClient("231812182312312123126", "xd@gmail.com", LocalDate.EPOCH));
+                ,new IndividualClient("931812182312312123126", "xd@gmail.com", LocalDate.EPOCH));
         Purchase purchase = new Purchase(client1, List.of());
         kafkaProducerService.sendEvent(purchase);
     }
