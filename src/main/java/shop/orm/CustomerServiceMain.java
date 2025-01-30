@@ -9,8 +9,8 @@ public class CustomerServiceMain {
     public static void main(String[] args) throws InterruptedException {
 
         KafkaConsumerService kafkaConsumerService = new KafkaConsumerService();
-//        kafkaConsumerService.createTopic("purchase-topic2");
-        kafkaConsumerService.consumeTopicsByGroup("purchase-topic2");
+        KafkaConsumerService.createTopic("purchase-topic-created");
+        kafkaConsumerService.consumeTopicsByGroup("purchase-topic-created");
     }
 
 }

@@ -27,6 +27,9 @@ public class PurchaseManager implements AutoCloseable {
     public void changeClientForPurchase(Purchase purchase, Client client){
         this.purchaseRepository.changeClientForPurchase(purchase,client);
     }
+    public List<Purchase> getAllPurchases(){
+        return this.purchaseRepository.getAllPurchases();
+    }
 
     public void deletePurchase(Purchase purchase){
         this.purchaseRepository.deletePurchase(purchase);

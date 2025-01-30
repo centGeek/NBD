@@ -65,6 +65,7 @@ public class PurchaseRepository extends AbstractMongoRepository {
         product.setProductBought(true);
     }
 
+
     public void makeAPurchase(Purchase purchase) {
         purchase.setId(UUID.randomUUID());
         ClientSession clientSession = mongoClient.startSession();
@@ -109,6 +110,20 @@ public class PurchaseRepository extends AbstractMongoRepository {
 
     }
 
+
+    public List<Purchase> getAllPurchases(){
+        List<Purchase> purchases = new ArrayList<>();
+
+        List<PurchaseMdb> purchaseMdbs = database.getCollection(collectionPurchases, PurchaseMdb.class)
+                .find()
+                .into(new ArrayList<>());
+
+        for (PurchaseMdb purchaseMdb : purchaseMdbs) {
+            purchases.add(PurchaseMdb.purchaseMdbToPurchase(purchaseMdb));
+        }
+
+        return purchases;
+    }
 
     public void deletePurchase(Purchase purchase){
         Bson filter = Filters.eq("_id", purchase.getId().toString());

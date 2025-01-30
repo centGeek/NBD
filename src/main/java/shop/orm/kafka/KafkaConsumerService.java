@@ -68,7 +68,7 @@ public class KafkaConsumerService {
                         Purchase purchase = objectMapper.readValue(record.value(), Purchase.class);
                         System.out.println("Deserialized Purchase: " + purchase);
                         purchaseManager.makeAPurchase(purchase);
-                        System.out.println("Amount of purchases by given client " + purchaseManager.getAllPurchasesByClient(purchase.getClient());
+                        System.out.println("Amount purchases in mongo db: " + purchaseManager.getAllPurchases().size());
                     } catch (JsonProcessingException e) {
                         System.err.println("Error deserializing record: " + e.getMessage());
                         e.printStackTrace();
